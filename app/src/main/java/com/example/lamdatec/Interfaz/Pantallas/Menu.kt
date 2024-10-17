@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun DrawerMenu(navController: NavHostController, scaffoldState: ScaffoldState) {
+fun Menu(navController: NavHostController, scaffoldState: ScaffoldState) {
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -51,12 +51,12 @@ fun DrawerMenu(navController: NavHostController, scaffoldState: ScaffoldState) {
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
         // Opciones de navegación
-        DrawerItem("Pantalla 1", icon = Icons.Default.Home) {
+        DrawerItem("INICIO", icon = Icons.Default.Home) {
             navController.navigate( PantallasNav.PRINCIPAL.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
-        DrawerItem("Pantalla 3", icon = Icons.Default.Settings) {
-            navController.navigate("pantalla3")
+        DrawerItem("SENSOR 1", icon = Icons.Default.Settings) {
+            navController.navigate(PantallasNav.S1.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
     }
