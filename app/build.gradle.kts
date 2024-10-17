@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.lamdatec"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.vision.internal.vkp)
     val nav_version = ("2.8.0")
 
+    implementation("com.github.tehras:charts:0.2.4-alpha")
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.ui:ui:1.5.0")         // Jetpack Compose UI
