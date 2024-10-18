@@ -56,11 +56,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     implementation(libs.vision.internal.vkp)
-    implementation(libs.material)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
     val nav_version = ("2.8.0")
 
     implementation("com.github.tehras:charts:0.2.4-alpha")
