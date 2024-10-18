@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "771278047280",
+    "project_id": "lamdatec-7c03d",
+    "storage_bucket": "lamdatec-7c03d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:771278047280:android:2c21dfb8e91042ae1685f5",
+        "android_client_info": {
+          "package_name": "com.example.lamdatec"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7Ow8J-wFhpRnhRYYT4keNPSP9Q2vkcYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
