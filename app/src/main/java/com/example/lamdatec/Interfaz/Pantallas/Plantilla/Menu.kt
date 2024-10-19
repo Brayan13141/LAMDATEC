@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Pantallas
+package com.example.lamdatec.Interfaz.Pantallas.Plantilla
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
