@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
     id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,7 +44,7 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -64,14 +66,12 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation ("com.google.android.gms:play-services-base:18.2.0")
     implementation(libs.firebase.database.ktx)
-    val nav_version = ("2.8.0")
 
     //IMPLEMENTACION PARA GRAFICOS
     implementation("com.github.tehras:charts:0.2.4-alpha")
 
 
     // Jetpack Compose Integration
-    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.ui:ui:1.5.0")         // Jetpack Compose UI
     implementation("androidx.compose.material:material:1.5.0")// Material para Compose
     implementation("androidx.compose.ui:ui-tooling:1.5.0")
@@ -84,7 +84,23 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
+
+    // Navigation
+    implementation(libs.navigation.compose)
+    // Mas iconos
+    implementation(libs.androidx.material.icons.extended.android)
+    // inyeccion de dependencias
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    // corrutinas
+    implementation(libs.kotlinx.coroutines)
+    // workmanager
+    implementation(libs.androidx.work.runtime.ktx)
+    // viewmodel
+    implementation(libs.androidx.lifecycle.viewmodel)
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

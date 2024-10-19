@@ -18,9 +18,9 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-        LAMDATECTheme {
-           App()
-        }
+            LAMDATECTheme {
+               App()
+            }
         }
     }
 }
