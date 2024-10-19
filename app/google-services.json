@@ -12,7 +12,12 @@
           "package_name": "com.example.lamdatec"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "771278047280-dank4c9g3uk9c6e3n2s6qdmjdldmf5ea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA7Ow8J-wFhpRnhRYYT4keNPSP9Q2vkcYM"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "771278047280-dank4c9g3uk9c6e3n2s6qdmjdldmf5ea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
