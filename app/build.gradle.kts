@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.lamdatec"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.lamdatec"
@@ -49,16 +49,27 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildToolsVersion = "35.0.0"
 }
 
 dependencies {
+    //FIREBASE
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.2")
 
+
+    //IMPLEMENTACION PARA LAS FUENTES Y LOS SERVICIOS
     implementation(libs.vision.internal.vkp)
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation ("com.google.android.gms:play-services-base:18.2.0")
+    implementation(libs.firebase.database.ktx)
     val nav_version = ("2.8.0")
 
+    //IMPLEMENTACION PARA GRAFICOS
     implementation("com.github.tehras:charts:0.2.4-alpha")
+
+
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.ui:ui:1.5.0")         // Jetpack Compose UI
