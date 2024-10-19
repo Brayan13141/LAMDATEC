@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">LAMDATEC</string>
+    <string name="lblLogIn">Iniciar sesion</string>
+    <string name="lblEmail">Correo electronico</string>
+    <string name="lblPassword">Contrana</string>
+    <string name="btnLogIn">Ingresar</string>
 </resources>
