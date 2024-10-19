@@ -11,7 +11,7 @@ import com.example.lamdatec.Interfaz.Pantallas.PantallaInicio
 @Composable
 fun App(
 ) {
-        val navController = rememberNavController()
+    val navController = rememberNavController()
             NavHost(
                 navController = navController,   // El NavController que estás usando
                 startDestination = PantallasNav.LOGIN.route   // La pantalla que será tu punto de inicio
