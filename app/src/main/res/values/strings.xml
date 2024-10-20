@@ -2,6 +2,7 @@
     <string name="app_name">LAMDATEC</string>
     <string name="lblLogIn">Iniciar sesion</string>
     <string name="lblEmail">Correo electronico</string>
-    <string name="lblPassword">Contrana</string>
+    <string name="lblPassword">Contraseña</string>
     <string name="btnLogIn">Ingresar</string>
+    <string name="lblSensor1">SENSOR 1</string>
 </resources>
