@@ -45,7 +45,6 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.lblLogIn))},
-                //backgroundColor = MaterialTheme.colorScheme.secondary
             )
         }
     ) { innerPadding ->
@@ -78,12 +77,7 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
                         contentDescription = "Email"
                     )
                 },
-                /*colors = TextFieldDefaults.(
-                        textColor = MaterialTheme.colorScheme.onPrimary, // Color del texto
-                    cursorColor = MaterialTheme.colorScheme.primary, // Color del cursor
-                    focusedBorderColor = MaterialTheme.colorScheme.primary, // Borde cuando está enfocado
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground // Borde cuando no está enfocado
-                )*/
+
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()
@@ -102,12 +96,6 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
                         contentDescription = null
                     )
                 },
-                /*modifier = Modifier.fillMaxWidth(), colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colorScheme.onPrimary, // Color del texto
-                    cursorColor = MaterialTheme.colorScheme.primary, // Color del cursor
-                    focusedBorderColor = MaterialTheme.colorScheme.primary, // Borde cuando está enfocado
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground // Borde cuando no está enfocado
-                )*/
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -118,11 +106,9 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
 
             // Botón para iniciar sesión
             Button(
-                onClick = { onLoginClick(email.value, password.value) },
-                /*colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )*/
+                onClick = { onLoginClick(email.value, password.value)
+
+                          },
                 shape = shapes.small,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -130,8 +116,6 @@ fun LoginScreen(onLoginClick: (String, String) -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.btnLogIn),
-                    //color = Color.White,
-                    //fontSize = 18.sp
                 )
             }
         }
