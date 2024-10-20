@@ -14,10 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.lamdatec.Interfaz.Pantallas.Plantilla.PPantallas
 import com.example.lamdatec.Modelos.ModeloSensores
+import com.example.lamdatec.R
 import com.github.tehras.charts.line.LineChart
 import com.github.tehras.charts.line.LineChartData
 import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
@@ -27,27 +29,39 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.random.Random
+
 
 @Composable
 fun PantallaConGrafico(navController: NavHostController) {
-
     val database = FirebaseDatabase.getInstance().getReference("LAMDATEC")
+    var puntosGrafico by remember { mutableStateOf(listOf<LineChartData.Point>()) }
+    var control by remember { mutableStateOf(1) }
 
-    PPantallas(navController,"SENSOR 1"){
-        GraficoDatos()
-        ConsultarDatosSensores(database)
-        writeDataToFirebase()
+
+    PPantallas(navController, stringResource(R.string.lblSensor1)) {
+        // Llama a la función que actualiza el gráfico en base a los datos de Firebase
+        ConsultarDatosSensores(database) { newPoints ->
+            puntosGrafico = newPoints
+        }
+
+        // Llama a la función para incrementar el valor de 'air'
+        writeDataToFirebaseIncrement(control)
+        {  c ->
+            control = c
+        }
+
+
+        // Dibuja el gráfico con los puntos actualizados
+        GraficoDatos(puntosGrafico)
+
     }
 }
 
-// Función para representar el gráfico
+
+
 @Composable
-fun GraficoDatos() {
-    val datos : List<ModeloSensores> = listOf(
-        ModeloSensores("Temperatura", 25.5f),
-        ModeloSensores("Humedad", 60.0f),
-        ModeloSensores("Presión", 1013.25f),
-        )
+fun GraficoDatos(datos: List<LineChartData.Point>) {
     var puntos = ArrayList<LineChartData.Point>()
     datos.mapIndexed { index, modeloSensores ->
         puntos.add(LineChartData.Point(modeloSensores.value, modeloSensores.label))
@@ -57,76 +71,69 @@ fun GraficoDatos() {
     lineas.add(LineChartData(points = puntos, lineDrawer = SolidLineDrawer()))
 
     LineChart(linesChartData = lineas,
-        modifier = Modifier.padding(horizontal = 30.dp, vertical = 80.dp).height(300.dp))
+        modifier = Modifier
+            .padding(horizontal = 30.dp, vertical = 80.dp)
+            .height(300.dp))
 }
 
 
+// Función para consultar los datos del sensor en Firebase
 @Composable
-fun ConsultarDatosSensores(database: DatabaseReference) {
-    // State para almacenar los valores de los sensores
-    var air by remember { mutableStateOf("Loading...") }
-    var co by remember { mutableStateOf("Loading...") }
-    var h by remember { mutableStateOf("Loading...") }
-    var status by remember { mutableStateOf("Loading...") }
+fun ConsultarDatosSensores(database: DatabaseReference, onPointsUpdate: (List<LineChartData.Point>) -> Unit) {
+    var airValues by remember { mutableStateOf(listOf<Float>()) }  // Lista para almacenar los valores de 'air'
 
     // Función para leer los datos de Firebase en tiempo real
     LaunchedEffect(Unit) {
-        database.addValueEventListener(object : ValueEventListener {
+        database.child("/Sensores").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Extrae los valores de los sensores
-                air = snapshot.child("/Sensores/air").value.toString()
-                co = snapshot.child("/Sensores/co").value.toString()
-                h = snapshot.child("/Sensores/h").value.toString()
-                status = snapshot.child("/Sensores/Estatus").value.toString()
+                // Extrae los valores de 'air' y los agrega a la lista
+                val air = snapshot.child("/air").getValue(Float::class.java) ?: 0f
+
+                // Actualiza la lista de valores con el nuevo valor de 'air'
+                airValues = airValues + air
+
+                // Crea una lista de puntos para el gráfico
+                val puntos = airValues.mapIndexed { index, value ->
+                    LineChartData.Point(value, "$index")
+                }
+
+                // Actualiza los puntos del gráfico
+                onPointsUpdate(puntos)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Maneja el error
-                air = "Error"
-                co = "Error"
-                h = "Error"
-                status = "Error"
+                Log.e("Firebase", "Error al leer los datos: ${error.message}")
             }
         })
     }
-
-    // UI que muestra los valores de los sensores
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Estatus: $status")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Air Quality: $air")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("CO Level: $co")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Humidity: $h")
-    }
 }
 
-
-fun writeDataToFirebase() {
-    // Obtén la referencia de la base de datos
+fun writeDataToFirebaseIncrement(control: Int,c: (Int) -> Unit) {
     val database = FirebaseDatabase.getInstance().reference
 
-    // Crea un mapa con los datos de ejemplo
-    val data = mapOf(
-        "status" to "OK",
-        "air" to 100,
-        "co" to 300,
-        "h" to 500
-    )
+    // Genera un valor aleatorio entre 1 y 1000
+    val newAirValue = Random.nextInt(1, 1001)
 
-    // Guarda los datos bajo la ruta "Sensores"
-    database.child("LAMDATEC/Sensores").setValue(data)
-        .addOnSuccessListener {
-            // Éxito al escribir los datos
-            Log.d("Firebase", "Datos escritos exitosamente")
+    // Lee el valor actual de 'air' y lo incrementa
+    database.child("LAMDATEC/Sensores/air").get().addOnSuccessListener { snapshot ->
+
+        // Aplica el filtro para que el valor no supere 200
+        if (control <= 10) {
+
+            // Actualiza el valor en Firebase
+            database.child("LAMDATEC/Sensores/air").setValue(newAirValue)
+
+                .addOnSuccessListener {
+                    Log.d("Firebase", "Valor de 'air' actualizado a: $newAirValue")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Firebase", "Error al actualizar 'air': ${exception.message}")
+                }
+            c(control+1)
+        } else {
+            Log.d("Firebase", "El valor de 'air' no se puede incrementar porque excede 200.")
         }
-        .addOnFailureListener { exception ->
-            // Error al escribir los datos
-            Log.e("Firebase", "Error al escribir en Firebase: ${exception.message}")
-        }
+    }.addOnFailureListener { exception ->
+        Log.e("Firebase", "Error al leer el valor actual de 'air': ${exception.message}")
+    }
 }
