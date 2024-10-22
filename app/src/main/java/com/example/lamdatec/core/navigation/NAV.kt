@@ -1,12 +1,12 @@
-package com.example.lamdatec.Interfaz.Nav
+package com.example.lamdatec.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.lamdatec.Interfaz.Pantallas.LoginScreen
-import com.example.lamdatec.Interfaz.Pantallas.PantallaConGrafico
-import com.example.lamdatec.Interfaz.Pantallas.PantallaInicio
+import com.example.lamdatec.features.authentication.presentation.login.LoginScreen
+import com.example.lamdatec.features.PantallaConGrafico
+import com.example.lamdatec.features.PantallaInicio
 
 @Composable
 fun App(

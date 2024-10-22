@@ -1,4 +1,4 @@
-package com.example.lamdatec.ui.theme
+package com.example.lamdatec.app.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,8 +1,8 @@
-package com.example.lamdatec.Interfaz.Pantallas
+package com.example.lamdatec.features
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.example.lamdatec.Interfaz.Pantallas.Plantilla.PPantallas
+import com.example.lamdatec.features.components.PPantallas
 
 
 @Composable

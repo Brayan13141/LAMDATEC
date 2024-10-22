@@ -1,4 +1,4 @@
-package com.example.lamdatec.Modelos
+package com.example.lamdatec.core.domain.model
 
 class ModeloSensores(
     var label : String,

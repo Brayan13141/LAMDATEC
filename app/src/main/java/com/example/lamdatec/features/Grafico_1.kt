@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Pantallas
+package com.example.lamdatec.features
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -16,12 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.lamdatec.Interfaz.Pantallas.Plantilla.PPantallas
-import com.example.lamdatec.Modelos.ModeloSensores
+import com.example.lamdatec.features.components.PPantallas
+import com.example.lamdatec.core.domain.model.ModeloSensores
 import com.github.tehras.charts.line.LineChart
 import com.github.tehras.charts.line.LineChartData
 import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
-import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference

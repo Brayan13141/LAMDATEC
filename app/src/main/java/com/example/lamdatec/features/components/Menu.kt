@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Pantallas.Plantilla
+package com.example.lamdatec.features.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -31,7 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.lamdatec.Interfaz.Nav.PantallasNav
+import com.example.lamdatec.core.navigation.PantallasNav
 import com.example.lamdatec.R
 import kotlinx.coroutines.launch
 
