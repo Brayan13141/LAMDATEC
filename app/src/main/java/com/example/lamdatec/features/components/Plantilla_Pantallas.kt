@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Pantallas.Plantilla
+package com.example.lamdatec.features.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight

@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Nav
+package com.example.lamdatec.core.navigation
 
 sealed class PantallasNav (val route: String){
     object LOGIN: PantallasNav("LOGIN")
