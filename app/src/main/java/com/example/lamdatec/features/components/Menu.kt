@@ -59,6 +59,10 @@ fun Menu(navController: NavHostController, scaffoldState: ScaffoldState) {
             navController.navigate(PantallasNav.S1.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
+        DrawerItem("SENSOR MQ2", icon = Icons.Default.Settings) {
+            navController.navigate(PantallasNav.S2.route)
+            coroutineScope.launch { scaffoldState.drawerState.close() }
+        }
     }
 }
 

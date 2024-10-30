@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lamdatec.Interfaz.Pantallas.PantallaConGrafico
+import com.example.lamdatec.Interfaz.Pantallas.PantallaInicio
 import com.example.lamdatec.features.authentication.presentation.login.LoginScreen
-import com.example.lamdatec.features.PantallaConGrafico
-import com.example.lamdatec.features.PantallaInicio
 
 @Composable
 fun App(
@@ -18,6 +18,7 @@ fun App(
             ) {
                 composable( PantallasNav.PRINCIPAL.route) { PantallaInicio(navController) }
                 composable( PantallasNav.S1.route) {  PantallaConGrafico(navController) }
+                composable( PantallasNav.S2.route) {  PantallaConGrafico(navController) }
                 composable( PantallasNav.LOGIN.route) {
                     LoginScreen() { email, password ->
                     // Aquí puedes agregar tu lógica de autenticación (ejemplo: Firebase)
