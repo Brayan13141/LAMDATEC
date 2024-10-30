@@ -64,11 +64,16 @@ dependencies {
     //IMPLEMENTACION PARA LAS FUENTES Y LOS SERVICIOS
     implementation(libs.vision.internal.vkp)
     implementation(libs.androidx.ui.text.google.fonts)
-    implementation ("com.google.android.gms:play-services-base:18.2.0")
+    implementation("com.google.android.gms:play-services-base:18.2.0")
+    implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.database.ktx)
 
+
     //IMPLEMENTACION PARA GRAFICOS
-    implementation("com.github.tehras:charts:0.2.4-alpha")
+    //implementation("com.github.tehras:charts:0.2.4-alpha")
+    implementation("co.yml:ycharts:2.1.0")
+
+
 
 
     // Jetpack Compose Integration
@@ -91,6 +96,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
     // inyeccion de dependencias
     implementation(libs.hilt.android)
+    implementation(libs.play.services.vision)
+    implementation(libs.core)
     ksp(libs.hilt.android.compiler)
     // corrutinas
     implementation(libs.kotlinx.coroutines)
