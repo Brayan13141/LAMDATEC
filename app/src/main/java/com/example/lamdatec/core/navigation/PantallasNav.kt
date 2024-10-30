@@ -5,5 +5,6 @@ sealed class PantallasNav (val route: String){
     object SESION: PantallasNav("SESION")
     object PRINCIPAL: PantallasNav("PRINCIPAL")
     object S1: PantallasNav("S1")
+    object S2: PantallasNav("S2")
 
 }
