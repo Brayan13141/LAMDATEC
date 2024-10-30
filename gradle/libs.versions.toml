@@ -19,6 +19,8 @@ ksp = "1.9.23-1.0.20"
 kotlinxCoroutinesAndroid = "1.7.3"
 lifecycleViewmodel = "2.8.6"
 workRuntimeKtx = "2.9.1"
+playServicesVision = "20.1.3"
+core = "1.46.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +48,10 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+play-services-vision = { group = "com.google.android.gms", name = "play-services-vision", version.ref = "playServicesVision" }
+core = { group = "com.google.ar", name = "core", version.ref = "core" }
+firebase-realtime={module="com.google.firebase:firebase-database-ktx"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
