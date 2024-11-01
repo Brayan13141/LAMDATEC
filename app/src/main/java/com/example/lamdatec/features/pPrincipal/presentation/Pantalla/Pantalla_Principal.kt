@@ -1,4 +1,4 @@
-package com.example.lamdatec.Interfaz.Pantallas
+package com.example.lamdatec.features.pPrincipal.presentation.Pantalla
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDp
@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,21 +17,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,14 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lamdatec.R
-import com.example.lamdatec.features.authentication.presentation.pPrincipal.viewM_Principal
 import com.example.lamdatec.features.components.PPantallas
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import androidx.compose.material3.Button
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal = viewModel()) {
@@ -77,44 +70,59 @@ fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal 
 
 @Composable
 fun SensoresPPM(viewModel: viewM_Principal) {
-    val fechaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-    val horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH :mm"))
+    val fechaActual = viewModel.currentDate
+    val horaActual = viewModel.currentTime
 
-    Text(text = fechaActual, style = MaterialTheme.typography.titleMedium)
-    Text(text = horaActual, style = MaterialTheme.typography.titleMedium)
-
-    Box(
+    // Tarjeta principal con bordes redondeados y fondo
+    Card(
+        //shape = RoundedCornerShape(10.dp),
         modifier = Modifier
+            .clip(RoundedCornerShape(18.dp))
             .fillMaxWidth()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            .padding(16.dp)
+                ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Fecha y hora
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = fechaActual,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = horaActual,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    fontSize = 16.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Tarjetas de los sensores
             SensorCard(
+                title = "Aire",
                 valor = viewModel.ppmAir.value.toString(),
-                modifier = Modifier.border(2.dp, Color(0xFF00BFFF)),
-                title = "AIR",
-                icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50)
+                icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50),
+                modifier = Modifier
             )
             SensorCard(
+                title = "Co2",
                 valor = viewModel.ppmCO2.value.toString(),
-                modifier = Modifier.border(2.dp, Color(0xFF32CD32)),
-                title = "CO2",
-                icon = painterResource(id = R.drawable.icons8_co2_50)
+                icon = painterResource(id = R.drawable.icons8_co2_50),
+                modifier = Modifier
             )
             SensorCard(
+                title = "H",
                 valor = viewModel.ppmHumedad.value.toString(),
-                modifier = Modifier.border(2.dp, Color(0xFF4682B4)),
-                title = "HUMEDAD",
-                icon = painterResource(id = R.drawable.icons8_hidr_geno_50)
+                icon = painterResource(id = R.drawable.icons8_hidr_geno_50),
+                modifier = Modifier
             )
         }
     }
 }
-
 @Composable
 fun MotoAnimationScreen(viewModel: viewM_Principal) {
     val isMotoOn by remember { viewModel.isMotoOn }
@@ -243,7 +251,10 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        Button( colors = ButtonDefaults.buttonColors(
+            containerColor = if (viewModel.isMotoOn.value) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = if (viewModel.isMotoOn.value)  Color.Red else Color.Green  // Cambia el color del fondo
+        ),
             onClick = {
                  viewModel.CambiarMotoStatus()
             }, enabled = isButtonEnabled
@@ -258,34 +269,40 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
 }
 
 @Composable
-fun SensorCard(title: String, icon: Painter,valor:String,modifier: Modifier) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        elevation = 4.dp,
-        shape = RoundedCornerShape(5.dp)
+fun SensorCard(title: String, icon: Painter, valor: String, modifier: Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = modifier.padding(16.dp)
-                .clip(shape = RoundedCornerShape(10.dp)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Icon(
-                painter = icon,
-                contentDescription = title,
-                modifier = Modifier.size(32.dp),
-                tint = Color.Gray
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = title+":",
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = valor)
-        }
-    }
-}
+        // Icono
+        Icon(
+            painter = icon,
+            contentDescription = title,
+            modifier = Modifier
+                .padding(16.dp)
+                .size(32.dp),
+            tint = Color.Black
+        )
 
+        // Texto del título
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp)
+        )
+        // Valor del sensor
+        Text(
+            text = valor,
+            fontSize = 18.sp,
+            color = Color.Green, // Color verde
+            modifier = Modifier.padding(end = 16.dp)
+
+        )
+    }
+    Divider(modifier = Modifier.height(1.dp))
+}
