@@ -60,6 +60,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database-ktx:20.3.2")
 
+    //WORK
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+
 
     //IMPLEMENTACION PARA LAS FUENTES Y LOS SERVICIOS
     implementation(libs.vision.internal.vkp)
