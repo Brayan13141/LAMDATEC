@@ -54,7 +54,7 @@ import com.google.firebase.database.ValueEventListener
 
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.lamdatec.features.authentication.presentation.graficos.MQ2.viewM_MQ2
+import com.example.lamdatec.features.Graficos.MQ2.viewM_MQ2
 
 @Composable
 fun PantallaConGrafico(navController: NavHostController, viewModel: viewM_MQ2 = viewModel()) {
