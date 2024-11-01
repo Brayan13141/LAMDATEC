@@ -1,4 +1,4 @@
-package com.example.lamdatec.features.authentication.presentation.pPrincipal
+package com.example.lamdatec.features.pPrincipal.presentation.Pantalla
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -32,14 +32,24 @@ class viewM_Principal : ViewModel() {
     var ControlMotoOn = mutableStateOf(false)
         private set
 
+    val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+    val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+
     init {
         MotoStatus()
         datosSensores()
     }
 
     private fun datosSensores() {
-        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH :mm"))
+
+        database.child("/Sensores/VAR_CONTROL/FECHA_ACTUAL/").setValue(currentDate).addOnSuccessListener {
+            database.child("/Sensores/VAR_CONTROL/HORA_ACTUAL/").setValue(currentTime).addOnSuccessListener {
+
+            }.addOnFailureListener {
+
+            }
+        }
 
         database.child("/Sensores/SENSORES/MQ135/FECHAS/$currentDate/$currentTime/VSENSOR")
             .addValueEventListener(object : ValueEventListener {
@@ -62,7 +72,7 @@ class viewM_Principal : ViewModel() {
                 override fun onCancelled(error: DatabaseError) {}
             })
 
-        database.child("/Sensores/SENSORES/MQ7/FECHAS/$currentDate/$currentTime/VSENSOR")
+        database.child("/Sensores/SENSORES/MQ7/Valor")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     ppmHumedad.value = snapshot.getValue(Float::class.java) ?: 0f

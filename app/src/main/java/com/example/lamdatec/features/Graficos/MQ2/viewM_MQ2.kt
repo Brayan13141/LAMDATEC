@@ -1,4 +1,4 @@
-package com.example.lamdatec.features.authentication.presentation.graficos.MQ2
+package com.example.lamdatec.features.Graficos.MQ2
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
