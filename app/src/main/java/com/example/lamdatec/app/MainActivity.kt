@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.example.lamdatec.core.navigation.App
 import com.example.lamdatec.app.theme.LAMDATECTheme
+import com.example.lamdatec.features.pPrincipal.data.Worker.ActualizarHora
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-
+        ActualizarHora(this)
         enableEdgeToEdge()
         setContent {
             LAMDATECTheme {
