@@ -1,20 +1,10 @@
 package com.example.lamdatec.features.Graficos.MQ2
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import co.yml.charts.common.model.Point
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class  viewM_MQ2 : ViewModel() {
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())

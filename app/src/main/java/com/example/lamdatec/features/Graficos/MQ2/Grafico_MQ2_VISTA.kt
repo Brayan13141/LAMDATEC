@@ -1,6 +1,5 @@
 package com.example.lamdatec.Interfaz.Pantallas
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -22,9 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -34,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.yml.charts.axis.AxisData
-import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
 import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
@@ -47,10 +42,6 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.lamdatec.R
 import com.example.lamdatec.features.components.PPantallas
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -168,7 +159,7 @@ fun Grafico(viewModel: viewM_MQ2)
     val puntosGrafico by viewModel.puntosGrafico.collectAsState()
 
     val yAxisMaxValue = puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0
-    val steps = 10  // Número de pasos o divisiones en el eje Y
+    val steps = 15  // Número de pasos o divisiones en el eje Y
     val yAxisStepSize = yAxisMaxValue / steps // Tamaño de cada paso en el eje Y
 
     val xAxisData = AxisData.Builder()
@@ -182,9 +173,9 @@ fun Grafico(viewModel: viewM_MQ2)
     val yAxisData = AxisData.Builder()
         .steps(10)
         .backgroundColor(Color.White)
-        .labelAndAxisLinePadding(10.dp)
+        .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
-            (i * yAxisStepSize).toString()
+            (steps * 100).toString()
         }.build()
 
     val lineChartData = LineChartData(
