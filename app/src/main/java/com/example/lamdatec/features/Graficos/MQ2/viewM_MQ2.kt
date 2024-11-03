@@ -1,47 +1,22 @@
 package com.example.lamdatec.features.Graficos.MQ2
 
 import androidx.lifecycle.ViewModel
-import com.google.firebase.database.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import android.util.Log
 import co.yml.charts.common.model.Point
+import com.example.lamdatec.features.Graficos.MQ2.data.SensorMQ2Repository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class  viewM_MQ2 : ViewModel() {
+class viewM_MQ2(private val repository: SensorMQ2Repository = SensorMQ2Repository()) : ViewModel() {
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())
         private set
-   // val puntosGrafico: StateFlow<List<Point>> = puntosGrafico
-
-    private val database = FirebaseDatabase.getInstance().getReference("LAMDATEC")
 
     init {
         consultarDatosSensores()
-        {  it ->
-            puntosGrafico.value = it
-        }
     }
 
-    fun consultarDatosSensores(actualizar: (List<Point>) -> Unit) {
-        var airValues : List<Float> = listOf()
-        val database = FirebaseDatabase.getInstance().reference
-
-        database.child("LAMDATEC/Sensores/SENSORES/MQ2/Valor").get().addOnSuccessListener { snapshot ->
-            database.child("LAMDATEC/Sensores/SENSORES/MQ2/Valor").addValueEventListener(object : ValueEventListener {
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val valor = snapshot.getValue(Int::class.java) ?: 0
-                    airValues = airValues + valor.toFloat()
-                    actualizar(airValues.mapIndexed { index, value ->
-                        Point(index.toFloat(), value)
-                    })
-                    Log.e("Firebase", "Valor actualizado en Firebase: $valor")
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-        }.addOnFailureListener { exception ->
-            Log.e("Firebase", "Error al leer el valor actual de 'air': ${exception.message}")
+    private fun consultarDatosSensores() {
+        repository.consultarDatosSensores { puntos ->
+            puntosGrafico.value = puntos // Actualiza el estado de los puntos del gráfico
         }
-
     }
 }
