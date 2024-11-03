@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.play.services.vision)
     implementation(libs.core)
+    implementation(libs.androidx.foundation.layout.android)
     ksp(libs.hilt.android.compiler)
     // corrutinas
     implementation(libs.kotlinx.coroutines)
