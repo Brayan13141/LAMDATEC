@@ -70,8 +70,6 @@ fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal 
 
 @Composable
 fun SensoresPPM(viewModel: viewM_Principal) {
-    val fechaActual = viewModel.currentDate
-    val horaActual = viewModel.currentTime
 
     // Tarjeta principal con bordes redondeados y fondo
     Card(
@@ -88,12 +86,12 @@ fun SensoresPPM(viewModel: viewM_Principal) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = fechaActual,
+                    text = viewModel.currentDate,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     fontSize = 16.sp
                 )
                 Text(
-                    text = horaActual,
+                    text = viewModel.currentTime,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     fontSize = 16.sp
                 )
