@@ -3,10 +3,8 @@ package com.example.lamdatec.features.Graficos.MQ2.data
 import android.util.Log
 import com.google.firebase.database.*
 import co.yml.charts.common.model.Point
-import kotlinx.coroutines.tasks.await
 
 class SensorMQ2Repository {
-    private val database = FirebaseDatabase.getInstance().getReference("LAMDATEC")
 
     fun consultarDatosSensores(actualizar: (List<Point>) -> Unit) {
         var airValues : List<Float> = listOf()
@@ -24,7 +22,7 @@ class SensorMQ2Repository {
                     Log.e("Firebase", "Valor actualizado en Firebase: $valor")
                 }
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+              //
                 }
             })
         }.addOnFailureListener { exception ->
