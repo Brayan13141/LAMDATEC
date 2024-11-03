@@ -3,7 +3,6 @@ package com.example.lamdatec.features.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -38,6 +37,11 @@ fun PPantallas(navController: NavHostController, Titulo: String, content: @Compo
                 backgroundColor = MaterialTheme.colorScheme.inversePrimary,
                 modifier = Modifier.height(100.dp),
                 title = {
+                    Text(
+                        text = Titulo,
+                        fontSize = 24.sp,
+                        color = Color.White
+                    )
                     Row(
                         verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.End,
