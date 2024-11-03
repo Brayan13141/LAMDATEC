@@ -58,28 +58,36 @@ fun Menu(navController: NavHostController, scaffoldState: ScaffoldState) {
         // Opciones de navegación
         DrawerItem(modifier = Modifier
             .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
-            .background(androidx.compose.material3.MaterialTheme.colorScheme.inversePrimary.copy(0.5f))
+            .background(
+                androidx.compose.material3.MaterialTheme.colorScheme.inversePrimary.copy(
+                    0.5f
+                )
+            )
             ,"INICIO", icon = Icons.Default.Home) {
             navController.navigate( PantallasNav.PRINCIPAL.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
 
-        DrawerItem(modifier = Modifier,"SENSOR 1", icon = Icons.Default.Settings) {
-            navController.navigate(PantallasNav.S1.route)
-            coroutineScope.launch { scaffoldState.drawerState.close() }
-        }
         DrawerItem(modifier = Modifier,"SENSOR MQ2", icon = Icons.Default.Settings) {
-            navController.navigate(PantallasNav.S2.route)
+            navController.navigate(PantallasNav.SENSOR_MQ2.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
-        Spacer(modifier = Modifier.height(330.dp).background(Color.Transparent))
-        Divider(modifier = Modifier.padding(vertical = 4.dp)
+        DrawerItem(modifier = Modifier,"SENSOR MQ7", icon = Icons.Default.Settings) {
+            navController.navigate(PantallasNav.SENSOR_MQ7.route)
+            coroutineScope.launch { scaffoldState.drawerState.close() }
+        }
+        Spacer(modifier = Modifier
+            .height(330.dp)
+            .background(Color.Transparent))
+        Divider(modifier = Modifier
+            .padding(vertical = 4.dp)
             .fillMaxWidth())
-        DrawerItem(modifier = Modifier.align(Alignment.End)
+        DrawerItem(modifier = Modifier
+            .align(Alignment.End)
             .clip(RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
             .background(androidx.compose.material3.MaterialTheme.colorScheme.error.copy(0.5f))
             ,"SALIR", icon = Icons.Default.ArrowBack) {
-            navController.navigate(PantallasNav.S2.route)
+            navController.navigate(PantallasNav.LOGIN.route)
             coroutineScope.launch { scaffoldState.drawerState.close() }
         }
     }
