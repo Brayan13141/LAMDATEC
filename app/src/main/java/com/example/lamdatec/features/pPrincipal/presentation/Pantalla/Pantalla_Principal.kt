@@ -1,11 +1,13 @@
 package com.example.lamdatec.features.pPrincipal.presentation.Pantalla
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +19,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -43,43 +48,50 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lamdatec.R
 import com.example.lamdatec.features.components.PPantallas
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal = viewModel()) {
+fun PantallaInicio(navController: NavHostController, viewModelP: viewM_Principal = viewModel()) {
     PPantallas(navController, "BIENVENIDO A LAMDATEC") {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
         ) {
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)) {
-                Text("PARTES POR MILLON", style = MaterialTheme.typography.titleMedium)
-            }
-            SensoresPPM(viewModel)
-            MotoAnimationScreen(viewModel)
+            SensoresPPM(viewModelP)
+
+
+            MotoAnimationScreen(viewModelP)
+
         }
+
     }
 }
 
-
 @Composable
 fun SensoresPPM(viewModel: viewM_Principal) {
-
     // Tarjeta principal con bordes redondeados y fondo
     Card(
-        //shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .clip(RoundedCornerShape(18.dp))
             .fillMaxWidth()
-            .padding(16.dp)
-                ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+            .padding(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.Center, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
+            ) {
+                Text("PARTES POR MILLON", style = MaterialTheme.typography.titleMedium)
+            }
             // Fecha y hora
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -96,35 +108,72 @@ fun SensoresPPM(viewModel: viewM_Principal) {
                     fontSize = 16.sp
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Tarjetas de los sensores
-            SensorCard(
-                title = "Aire",
-                valor = viewModel.ppmAir.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50),
-                modifier = Modifier
-            )
-            SensorCard(
-                title = "Co2",
-                valor = viewModel.ppmCO2.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_co2_50),
-                modifier = Modifier
-            )
-            SensorCard(
-                title = "H",
-                valor = viewModel.ppmHumedad.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_hidr_geno_50),
-                modifier = Modifier
-            )
+            // Dos columnas para mostrar los seis sensores
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                // Primera columna de sensores
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    SensorCard(
+                        title = "Aire",
+                        valor = viewModel.ppmAir.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50),
+                        modifier = Modifier
+                    )
+                    SensorCard(
+                        title = "MQ2",
+                        valor = viewModel.ppmCO2.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_co2_50),
+                        modifier = Modifier
+                    )
+                    SensorCard(
+                        title = "MQ3",
+                        valor = viewModel.ppmHumedad.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_hidr_geno_50),
+                        modifier = Modifier
+                    )
+                }
+
+                // Segunda columna de sensores
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    SensorCard(
+                        title = "MQ4",
+                        valor = viewModel.ppmAir.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50),
+                        modifier = Modifier
+                    )
+                    SensorCard(
+                        title = "MQ5",
+                        valor = viewModel.ppmCO2.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_co2_50),
+                        modifier = Modifier
+                    )
+                    SensorCard(
+                        title = "MQ6",
+                        valor = viewModel.ppmHumedad.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_hidr_geno_50),
+                        modifier = Modifier
+                    )
+                }
+            }
         }
     }
 }
+
 @Composable
 fun MotoAnimationScreen(viewModel: viewM_Principal) {
     val isMotoOn by remember { viewModel.isMotoOn }
-    var controlMotoOn by remember {viewModel.ControlMotoOn }
+    var controlMotoOn by remember { viewModel.ControlMotoOn }
     val isButtonEnabled by viewModel.isButtonEnabled.collectAsState()
 
     // Animación para el movimiento horizontal
@@ -166,8 +215,8 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
-            .padding(16.dp),
+            .height(220.dp)
+            .padding(12.dp),
         contentAlignment = Alignment.Center
     ) {
         // Mostrar la imagen de la moto dependiendo del estado
@@ -187,7 +236,7 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
                 controlMotoOn = true//ENTRADA DE LA MOTO
                 Image(
                     painter = painterResource(
-                        id =   R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
+                        id = R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
                     ),
                     contentDescription = null,
                     modifier = Modifier
@@ -195,10 +244,10 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
                         .offset(x = Entrar)
                         .clip(CircleShape)
                 )
-                if(Entrar.value == 0.dp.value){//MOSTRAR IMAGEN CON FONDO VERDE(CONECTADO)
+                if (Entrar.value == 0.dp.value) {//MOSTRAR IMAGEN CON FONDO VERDE(CONECTADO)
                     Image(
                         painter = painterResource(
-                            id =   R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e
+                            id = R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e
                         ),
                         contentDescription = null,
                         modifier = Modifier
@@ -208,7 +257,7 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
                     )
                 }
             }
-        }else{
+        } else {
             Image(
                 painter = painterResource(
                     id = R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
@@ -221,10 +270,10 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
             )
             if (Salir2.value == 250.dp.value)//IMAGEN VACIA ENTRANDO
             {
-                controlMotoOn =false
+                controlMotoOn = false
                 Image(
                     painter = painterResource(
-                        id =   R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
+                        id = R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
                     ),
                     contentDescription = null,
                     modifier = Modifier
@@ -237,7 +286,7 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
             {
                 Image(
                     painter = painterResource(
-                        id =   R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
+                        id = R.drawable._721ba60e_8eec_4bdc_a184_6c9d2b89090e_removebg_preview
                     ),
                     contentDescription = null,
                     modifier = Modifier
@@ -249,14 +298,14 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button( colors = ButtonDefaults.buttonColors(
-            containerColor = if (viewModel.isMotoOn.value) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = if (viewModel.isMotoOn.value)  Color.Red else Color.Green  // Cambia el color del fondo
-        ),
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (viewModel.isMotoOn.value) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = if (viewModel.isMotoOn.value) Color.Red else Color.Green  // Cambia el color del fondo
+            ),
             onClick = {
-                 viewModel.CambiarMotoStatus()
-            }, enabled = isButtonEnabled
-            ,
+                viewModel.CambiarMotoStatus()
+            }, enabled = isButtonEnabled,
             modifier = Modifier.align(Alignment.BottomCenter),
             shape = shapes.small
 
@@ -267,40 +316,56 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
 }
 
 @Composable
-fun SensorCard(title: String, icon: Painter, valor: String, modifier: Modifier) {
+fun SensorCard(
+    title: String,
+    icon: Painter,
+    valor: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 4.dp) // Reducimos el padding vertical para un diseño más compacto
+            .clip(shape = MaterialTheme.shapes.small),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Icono
         Icon(
             painter = icon,
             contentDescription = title,
             modifier = Modifier
-                .padding(16.dp)
-                .size(32.dp),
+                .padding(8.dp) // Reducimos el padding alrededor del icono
+                .size(24.dp), // Reducimos el tamaño del icono
             tint = Color.Black
         )
 
         // Texto del título
         Text(
             text = title,
-            fontSize = 18.sp,
+            fontSize = 14.sp, // Reducimos el tamaño de la fuente del título
             color = Color.Black,
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 8.dp)
+                .padding(start = 4.dp) // Menor padding lateral
         )
+
         // Valor del sensor
         Text(
             text = valor,
-            fontSize = 18.sp,
-            color = Color.Green, // Color verde
-            modifier = Modifier.padding(end = 16.dp)
-
+            fontSize = 14.sp, // Reducimos el tamaño de la fuente del valor
+            color = Color.Green,
+            modifier = Modifier.padding(end = 8.dp) // Menor padding al final
         )
     }
-    Divider(modifier = Modifier.height(1.dp))
+
+    // Divider más delgado para una separación visual ligera
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(0.5.dp), // Hacemos el Divider más delgado
+        color = Color.Gray.copy(alpha = 0.5f)
+    )
 }
+
+
+
