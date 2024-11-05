@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import com.example.lamdatec.R
-import com.example.lamdatec.features.components.Menu.Menu
 
 @Composable
 fun PPantallas(navController: NavHostController, Titulo: String, content: @Composable () -> Unit) {
