@@ -2,10 +2,15 @@ package com.example.lamdatec.features.Graficos.MQ2
 
 import androidx.lifecycle.ViewModel
 import co.yml.charts.common.model.Point
-import com.example.lamdatec.features.Graficos.MQ2.data.SensorMQ2Repository
+import com.example.lamdatec.features.Graficos.MQ2.data.SensorMQ2RepositoryImp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
-class viewM_MQ2(private val repository: SensorMQ2Repository = SensorMQ2Repository()) : ViewModel() {
+@HiltViewModel
+class MQ2ViewModel @Inject constructor(
+    private val repository: SensorMQ2RepositoryImp
+) : ViewModel() {
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())
         private set
 
