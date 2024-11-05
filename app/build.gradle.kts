@@ -92,6 +92,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.play.services.vision)
+    implementation(libs.core)
+    implementation(libs.androidx.foundation.layout.android)
 
     // Navigation
     implementation(libs.navigation.compose)
@@ -99,9 +102,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
     // inyeccion de dependencias
     implementation(libs.hilt.android)
-    implementation(libs.play.services.vision)
-    implementation(libs.core)
-    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
     // corrutinas
     implementation(libs.kotlinx.coroutines)

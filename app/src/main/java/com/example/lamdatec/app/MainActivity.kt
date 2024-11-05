@@ -9,9 +9,10 @@ import com.example.lamdatec.core.navigation.App
 import com.example.lamdatec.app.theme.LAMDATECTheme
 import com.example.lamdatec.features.pPrincipal.data.Worker.ActualizarHora
 import com.google.firebase.FirebaseApp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
