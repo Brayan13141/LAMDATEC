@@ -6,7 +6,7 @@ import co.yml.charts.common.model.Point
 import kotlinx.coroutines.tasks.await
 
 class SensorMQ7Repository {
-    fun consultarDatosSensores(actualizar: (List<Point>) -> Unit) {
+   suspend fun consultarDatosSensores(actualizar: (List<Point>) -> Unit) {
         var airValues : List<Float> = listOf()
         val database = FirebaseDatabase.getInstance().reference
 
@@ -19,7 +19,7 @@ class SensorMQ7Repository {
                     actualizar(airValues.mapIndexed { index, value ->
                         Point(index.toFloat(), value)
                     })
-                    Log.e("Firebase", "Valor actualizado en Firebase: $valor")
+                    //Log.e("Firebase", "Valor actualizado en Firebase: $valor")
                 }
                 override fun onCancelled(error: DatabaseError) {
               //
