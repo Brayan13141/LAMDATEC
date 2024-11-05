@@ -1,5 +1,6 @@
 package com.example.lamdatec.features.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -43,13 +50,13 @@ fun PantallaConGraficoGENERAL(
     titulo: String,
     puntosGrafico: List<Point>
 ) {
-
     PPantallas(navController, titulo) {
-        Column() {
+        Column {
             Botones()
-
             if (puntosGrafico.isNotEmpty()) {
-                Box() {
+                Box(modifier = Modifier.fillMaxWidth()
+                    .border(1.dp, Color.Black, shape = MaterialTheme.shapes.large)
+                ){
                     Grafico(puntosGrafico)
                 }
             }
@@ -80,7 +87,7 @@ fun ValorCard(valor: String, descripcion: String) {
             )
             Text(
                 text = descripcion,
-                color = androidx.compose.ui.graphics.Color.Gray,
+                color = Color.Gray,
                 style = MaterialTheme.typography.bodyMedium // Tamaño pequeño para la descripción
             )
         }
@@ -88,9 +95,8 @@ fun ValorCard(valor: String, descripcion: String) {
 }
 
 @Composable
-fun Botones()
-{
-    Column(modifier = androidx.compose.ui.Modifier.padding(16.dp)) {
+fun Botones() {
+    Column(modifier =Modifier.padding(16.dp)) {
         // Filas de Fechas
         LazyRow(
             modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
@@ -100,22 +106,27 @@ fun Botones()
                 "01 OCT", "02 OCT", "03 OCT", "04 OCT", "05 OCT", "06 OCT",
                 "07 OCT", "08 OCT", "09 OCT", "10 OCT"
             ) // Agrega más fechas si necesitas
-            items(fechas.size-1) { fecha ->
+            items(fechas.size - 1) { fecha ->
                 Card(
                     shape = MaterialTheme.shapes.small,
-                    modifier = androidx.compose.ui.Modifier.padding(4.dp).width(60.dp)
+                    modifier = androidx.compose.ui.Modifier
+                        .padding(4.dp)
+                        .width(60.dp)
                 ) {
                     Text(
-                        text = fechas.get(fecha).toString(),
-                        color = androidx.compose.ui.graphics.Color.White,
-                        modifier = androidx.compose.ui.Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
+                        text = fechas[fecha],
+                        color = Color.White,
+                        modifier = androidx.compose.ui.Modifier.padding(
+                            vertical = 8.dp,
+                            horizontal = 12.dp
+                        )
                     )
                 }
             }
         }
         // Botones de selección debajo
         Row(
-            modifier = androidx.compose.ui.Modifier
+            modifier =Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -125,13 +136,13 @@ fun Botones()
                 Button(
                     onClick = { /* Acción para cada botón */ },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (opcion == "Por día") androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.LightGray
+                        containerColor = if (opcion == "Por día") Color.Black else Color.LightGray
                     ),
                     modifier = androidx.compose.ui.Modifier.padding(4.dp)
                 ) {
                     Text(
                         text = opcion,
-                        color = if (opcion == "Por día") androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black
+                        color = if (opcion == "Por día") Color.White else Color.Black
                     )
                 }
             }
@@ -141,64 +152,93 @@ fun Botones()
 
 
 @Composable
-fun Grafico(Puntos: List<Point>)
-{
-    val puntosGrafico = Puntos
+fun Grafico(Puntos: List<Point>) {
+    val steps = 20
+    val puntosGrafico =
+        remember { mutableStateListOf<Point>().apply { addAll(Puntos) } }
 
-    val yAxisMaxValue = puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0
-    val steps = 15  // Número de pasos o divisiones en el eje Y
-    val yAxisStepSize = yAxisMaxValue / steps // Tamaño de cada paso en el eje Y
+    if (puntosGrafico.isNotEmpty()) {
+        // Actualizar puntos gráficos cuando `Puntos` cambia
+        LaunchedEffect(Puntos) {
+            puntosGrafico.clear()
+            puntosGrafico.addAll(Puntos.takeLast(10)) // Mantener máximo 20 puntos
+        }
 
-    val xAxisData = AxisData.Builder()
-        .axisStepSize(40.dp)
-        .backgroundColor(color = androidx.compose.ui.graphics.Color.White)
-        .steps(10)
-        .labelData { i -> i.toString() }
-        .labelAndAxisLinePadding(10.dp)
-        .build()
+        // Valor máximo y mínimo del eje Y basado en los valores actuales de los puntos
+        val yAxisMaxValue by remember {
+            derivedStateOf { puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0 }
+        }
+        val yAxisMinValue by remember {
+            derivedStateOf { puntosGrafico.minOfOrNull { it.y.toInt() } ?: 0 }
+        }
 
-    val yAxisData = AxisData.Builder()
-        .steps(10)
-        .backgroundColor(androidx.compose.ui.graphics.Color.White)
-        .labelAndAxisLinePadding(20.dp)
-        .labelData { i ->
-            (steps * 100).toString()
-        }.build()
 
-    val lineChartData = LineChartData(
-        linePlotData = LinePlotData(
-            lines = listOf(
-                co.yml.charts.ui.linechart.model.Line(
-                    dataPoints =  puntosGrafico.map { co.yml.charts.common.model.Point(it.x.toFloat(), it.y.toFloat()) },
-                    LineStyle(color = MaterialTheme.colorScheme.primary,
-                        lineType = LineType.SmoothCurve(isDotted = false)
-                    ),
-                    IntersectionPoint(),
-                    SelectionHighlightPoint(),
-                    ShadowUnderLine(
-                        alpha = 0.5f,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.inversePrimary,
-                                androidx.compose.ui.graphics.Color.Transparent))
-                    ),
-                    SelectionHighlightPopUp()
-                )
+        val xAxisData = AxisData.Builder()
+            .axisStepSize(30.dp)
+            .backgroundColor(color = Color.Black)
+            .steps(10)
+            .labelData { i -> i.toString() }
+            .labelAndAxisLinePadding(10.dp)
+            .axisLabelColor(Color.White)
+            .axisLabelDescription { "PASOS" }
+            .build()
+
+        val yAxisData = AxisData.Builder()
+            .steps(steps)
+            .backgroundColor(Color.Black)
+            .labelAndAxisLinePadding(20.dp)
+            .axisLabelColor(Color.White)
+            .labelData { i ->
+                // Dividimos el rango exacto en 10 partes y mostramos los valores correspondientes
+                val range = yAxisMaxValue - yAxisMinValue
+                val exactValue = yAxisMinValue + (i * range / steps)
+                exactValue.toString()
+            }.build()
+
+        val lineChartData = LineChartData(
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    co.yml.charts.ui.linechart.model.Line(
+                        dataPoints = puntosGrafico.map {
+                            Point(
+                                it.x,
+                                it.y
+                            )
+                        },
+                        LineStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            lineType = LineType.SmoothCurve(isDotted = false)
+                        ),
+                        IntersectionPoint(
+                            color = Color.White
+                        ),
+                        SelectionHighlightPoint(),
+                        ShadowUnderLine(
+                            alpha = 0.8f,
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.inversePrimary,
+                                    Color.Transparent
+                                )
+                            )
+                        ),
+                        SelectionHighlightPopUp()
+                    )
+                ),
             ),
-        ),
-        isZoomAllowed = true,
-        paddingRight = 3.dp,
-        xAxisData = xAxisData,
-        yAxisData = yAxisData,
-        gridLines = GridLines(),
-        backgroundColor = androidx.compose.ui.graphics.Color.White
-    )
-    LineChart(
-        modifier = androidx.compose.ui.Modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        lineChartData = lineChartData
-    )
-
+            isZoomAllowed = true,
+            paddingRight = 5.dp,
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            gridLines = GridLines(),
+            backgroundColor = Color.Black
+        )
+        LineChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp),
+            lineChartData = lineChartData
+        )
+    }
 }
 
