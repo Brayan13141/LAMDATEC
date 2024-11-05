@@ -70,12 +70,12 @@ fun ValorCard(valor: String, descripcion: String) {
     Card(
         shape = RoundedCornerShape(8.dp), // Esquinas redondeadas
         elevation = CardDefaults.elevatedCardElevation(), // Sombra
-        modifier =  Modifier
+        modifier = androidx.compose.ui.Modifier
             .size(width = 80.dp, height = 100.dp) // Tamaño del elemento
             .padding(8.dp) // Espacio alrededor de la tarjeta
     ) {
         Column(
-            modifier =  Modifier.padding(8.dp),
+            modifier = androidx.compose.ui.Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -99,7 +99,7 @@ fun Botones() {
     Column(modifier =Modifier.padding(16.dp)) {
         // Filas de Fechas
         LazyRow(
-            modifier =  Modifier.fillMaxWidth(),
+            modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val fechas = listOf(
@@ -109,14 +109,14 @@ fun Botones() {
             items(fechas.size - 1) { fecha ->
                 Card(
                     shape = MaterialTheme.shapes.small,
-                    modifier =  Modifier
+                    modifier = androidx.compose.ui.Modifier
                         .padding(4.dp)
                         .width(60.dp)
                 ) {
                     Text(
                         text = fechas[fecha],
                         color = Color.White,
-                        modifier = Modifier.padding(
+                        modifier = androidx.compose.ui.Modifier.padding(
                             vertical = 8.dp,
                             horizontal = 12.dp
                         )
@@ -138,7 +138,7 @@ fun Botones() {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (opcion == "Por día") Color.Black else Color.LightGray
                     ),
-                    modifier =  Modifier.padding(4.dp)
+                    modifier = androidx.compose.ui.Modifier.padding(4.dp)
                 ) {
                     Text(
                         text = opcion,
