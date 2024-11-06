@@ -1,5 +1,6 @@
 package com.example.lamdatec.features.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +45,7 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import com.google.ar.core.dependencies.i
 
 @Composable
 fun PantallaConGraficoGENERAL(
@@ -47,7 +57,6 @@ fun PantallaConGraficoGENERAL(
     PPantallas(navController, titulo) {
         Column() {
             Botones()
-
             if (puntosGrafico.isNotEmpty()) {
                 Box() {
                     Grafico(puntosGrafico)
@@ -88,8 +97,7 @@ fun ValorCard(valor: String, descripcion: String) {
 }
 
 @Composable
-fun Botones()
-{
+fun Botones() {
     Column(modifier = androidx.compose.ui.Modifier.padding(16.dp)) {
         // Filas de Fechas
         LazyRow(
@@ -100,15 +108,20 @@ fun Botones()
                 "01 OCT", "02 OCT", "03 OCT", "04 OCT", "05 OCT", "06 OCT",
                 "07 OCT", "08 OCT", "09 OCT", "10 OCT"
             ) // Agrega más fechas si necesitas
-            items(fechas.size-1) { fecha ->
+            items(fechas.size - 1) { fecha ->
                 Card(
                     shape = MaterialTheme.shapes.small,
-                    modifier = androidx.compose.ui.Modifier.padding(4.dp).width(60.dp)
+                    modifier =  Modifier
+                        .padding(4.dp)
+                        .width(60.dp)
                 ) {
                     Text(
                         text = fechas.get(fecha).toString(),
-                        color = androidx.compose.ui.graphics.Color.White,
-                        modifier = androidx.compose.ui.Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
+                        color = Color.White,
+                        modifier = Modifier.padding(
+                            vertical = 8.dp,
+                            horizontal = 12.dp
+                        )
                     )
                 }
             }
@@ -127,7 +140,7 @@ fun Botones()
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (opcion == "Por día") androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.LightGray
                     ),
-                    modifier = androidx.compose.ui.Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp)
                 ) {
                     Text(
                         text = opcion,
@@ -138,67 +151,92 @@ fun Botones()
         }
     }
 }
-
-
 @Composable
-fun Grafico(Puntos: List<Point>)
-{
-    val puntosGrafico = Puntos
+fun Grafico(Puntos: List<Point>) {
+    var puntosGrafico by remember { mutableStateOf(Puntos) }
 
-    val yAxisMaxValue = puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0
-    val steps = 15  // Número de pasos o divisiones en el eje Y
-    val yAxisStepSize = yAxisMaxValue / steps // Tamaño de cada paso en el eje Y
+    // Actualizamos los puntos solo cuando los datos cambian
+    LaunchedEffect(Puntos) {
 
-    val xAxisData = AxisData.Builder()
-        .axisStepSize(40.dp)
-        .backgroundColor(color = androidx.compose.ui.graphics.Color.White)
-        .steps(10)
-        .labelData { i -> i.toString() }
-        .labelAndAxisLinePadding(10.dp)
-        .build()
+        puntosGrafico = Puntos.takeLast(10) // Mantener los últimos 10 puntos
+    }
+    val steps = 15
 
-    val yAxisData = AxisData.Builder()
-        .steps(10)
-        .backgroundColor(androidx.compose.ui.graphics.Color.White)
-        .labelAndAxisLinePadding(20.dp)
-        .labelData { i ->
-            (steps * 100).toString()
-        }.build()
+    if (puntosGrafico.isNotEmpty()) {
+        // Valor máximo y mínimo del eje Y basado en los valores actuales de los puntos
+        val yAxisMaxValue by remember {
+            derivedStateOf { puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0 }
+        }
+        val yAxisMinValue by remember {
+            derivedStateOf { puntosGrafico.minOfOrNull { it.y.toInt() } ?: 0 }
+        }
 
-    val lineChartData = LineChartData(
-        linePlotData = LinePlotData(
-            lines = listOf(
-                co.yml.charts.ui.linechart.model.Line(
-                    dataPoints =  puntosGrafico.map { co.yml.charts.common.model.Point(it.x.toFloat(), it.y.toFloat()) },
-                    LineStyle(color = MaterialTheme.colorScheme.primary,
-                        lineType = LineType.SmoothCurve(isDotted = false)
-                    ),
-                    IntersectionPoint(),
-                    SelectionHighlightPoint(),
-                    ShadowUnderLine(
-                        alpha = 0.5f,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.inversePrimary,
-                                androidx.compose.ui.graphics.Color.Transparent))
-                    ),
-                    SelectionHighlightPopUp()
-                )
+        // Configuración del eje X
+        val xAxisData = AxisData.Builder()
+            .axisStepSize(40.dp)
+            .backgroundColor(color = Color.White)
+            .steps(steps)
+            .labelData { i ->
+                i.toString() }
+            .labelAndAxisLinePadding(10.dp)
+            .build()
+
+        // Configuración del eje Y para mostrar valores exactos
+        val yAxisData = AxisData.Builder()
+            .steps(steps)
+            .backgroundColor(Color.White)
+            .labelAndAxisLinePadding(20.dp)
+            .labelData { i ->
+                // Dividir el rango exacto en `steps` partes y mostrar los valores correspondientes
+                val range = yAxisMaxValue - yAxisMinValue
+                val exactValue = yAxisMinValue + (i * range / steps)
+                exactValue.toString()
+            }.build()
+
+        // Configuración del gráfico de líneas
+        val lineChartData = LineChartData(
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    co.yml.charts.ui.linechart.model.Line(
+                        dataPoints = puntosGrafico.map {
+                            Point(
+                                it.x.toFloat(),
+                                it.y.toFloat()
+                            )
+                        },
+                        LineStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            lineType = LineType.SmoothCurve(isDotted = false)
+                        ),
+                        IntersectionPoint(),
+                        SelectionHighlightPoint(),
+                        ShadowUnderLine(
+                            alpha = 0.5f,
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.inversePrimary,
+                                    Color.Transparent
+                                )
+                            )
+                        ),
+                        SelectionHighlightPopUp()
+                    )
+                ),
             ),
-        ),
-        isZoomAllowed = true,
-        paddingRight = 3.dp,
-        xAxisData = xAxisData,
-        yAxisData = yAxisData,
-        gridLines = GridLines(),
-        backgroundColor = androidx.compose.ui.graphics.Color.White
-    )
-    LineChart(
-        modifier = androidx.compose.ui.Modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        lineChartData = lineChartData
-    )
+            isZoomAllowed = true,
+            paddingRight = 3.dp,
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            gridLines = GridLines(),
+            backgroundColor = Color.White
+        )
 
+        // Composable del gráfico
+        LineChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp),
+            lineChartData = lineChartData
+        )
+    }
 }
-
