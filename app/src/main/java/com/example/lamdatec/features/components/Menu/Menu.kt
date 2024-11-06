@@ -26,9 +26,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lamdatec.core.navigation.PantallasNav
 import com.example.lamdatec.R
-import com.example.lamdatec.features.Graficos.MQ2.viewM_MQ2
 import kotlinx.coroutines.launch
 
 
@@ -79,7 +75,7 @@ fun Menu(
             Log.d("MenuViewModel", "Item seleccionado: ${selectedItem}")
             coroutineScope.launch {
                 scaffoldState.drawerState.close()
-                menuViewModel.selectItem("INICIO")
+                menuViewModel.ActualizarselectedItem("INICIO")
        
             }
         }
@@ -94,7 +90,7 @@ fun Menu(
             Log.d("MenuViewModel", "Item seleccionado: ${selectedItem}")
             coroutineScope.launch {
                 scaffoldState.drawerState.close()
-                menuViewModel.selectItem("SENSOR MQ2")
+                menuViewModel.ActualizarselectedItem("SENSOR MQ2")
                 navController.navigate(PantallasNav.SENSOR_MQ2.route) {
                     launchSingleTop = true
                 }
@@ -112,7 +108,7 @@ fun Menu(
             Log.d("MenuViewModel", "Item seleccionado: ${selectedItem}")
             coroutineScope.launch {
                 scaffoldState.drawerState.close()
-                menuViewModel.selectItem("SENSOR MQ7")
+                menuViewModel.ActualizarselectedItem("SENSOR MQ7")
                 navController.navigate(PantallasNav.SENSOR_MQ7.route) {
                     launchSingleTop = true
                 }
@@ -146,7 +142,7 @@ fun Menu(
                 Log.d("MenuViewModel", "Item seleccionado: ${selectedItem}")
                 navController.navigate(PantallasNav.SENSOR_MQ7.route) {
                     launchSingleTop = true
-                    menuViewModel.selectItem("SALIR")
+                    menuViewModel.ActualizarselectedItem("SALIR")
                 }
             }
 
