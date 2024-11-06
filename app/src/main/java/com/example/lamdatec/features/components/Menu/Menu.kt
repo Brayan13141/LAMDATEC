@@ -63,7 +63,6 @@ fun Menu(
         UserSection()
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
-        Text(selectedItem.value.toString())
         // Opciones de navegación
         DrawerItem(
             modifier = Modifier
