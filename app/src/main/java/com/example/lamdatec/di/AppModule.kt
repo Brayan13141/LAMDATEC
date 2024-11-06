@@ -20,9 +20,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideSensorMQ2Repository(
-        database: FirebaseDatabase
-    ): SensorMQ2Repository {
+    fun provideSensorMQ2Repository(database: FirebaseDatabase): SensorMQ2Repository {
         return SensorMQ2RepositoryImp(database)
     }
 }
