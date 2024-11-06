@@ -20,7 +20,8 @@ fun GraficoMQ2_VISTA(
     viewModel: MQ2ViewModel = hiltViewModel()
 ) {
     val puntosGrafico = viewModel.puntosGrafico.collectAsState()
-        PantallaConGraficoGENERAL(navController,"MQ2",puntosGrafico.value)
+    val valorActual = viewModel.valorActual.collectAsState()
+    PantallaConGraficoGENERAL(navController, "MQ2", puntosGrafico.value,valorActual.value.toInt())
 
 }
 
