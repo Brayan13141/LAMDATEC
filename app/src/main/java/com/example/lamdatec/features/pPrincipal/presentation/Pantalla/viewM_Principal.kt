@@ -18,12 +18,13 @@ class viewM_Principal(private val repository: Ppantalla_Repo_Fire = Ppantalla_Re
     val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
     val currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+
     // Estados para los valores de los sensores
-    var ppmAir = mutableStateOf(0f)
+    var ppmAir = MutableStateFlow<Float>(0f)
         private set
-    var ppmCO2 = mutableStateOf(0f)
+    var ppmCO2 = MutableStateFlow<Float>(0f)
         private set
-    var ppmHumedad = mutableStateOf(0f)
+    var ppmHumedad =  MutableStateFlow<Float>(0f)
         private set
 
     // Estado para el estado de la moto

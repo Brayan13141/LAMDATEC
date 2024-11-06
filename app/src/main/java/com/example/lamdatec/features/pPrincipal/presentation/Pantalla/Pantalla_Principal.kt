@@ -108,17 +108,17 @@ fun SensoresPPM(viewModel: viewM_Principal) {
                 ) {
                     SensorCard(
                         title = "Aire",
-                        valor = viewModel.ppmAir.value.toString(),
+                        valor = viewModel.ppmAir.collectAsState().value.toString(),
                         icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50)
                     )
                     SensorCard(
                         title = "CO2",
-                        valor = viewModel.ppmCO2.value.toString(),
+                        valor = viewModel.ppmCO2.collectAsState().value.toString(),
                         icon = painterResource(id = R.drawable.icons8_co2_50)
                     )
                     SensorCard(
                         title = "Humedad",
-                        valor = viewModel.ppmHumedad.value.toString(),
+                        valor = viewModel.ppmHumedad.collectAsState().value.toString(),
                         icon = painterResource(id = R.drawable.icons8_hidr_geno_50)
                     )
                 }
@@ -130,17 +130,17 @@ fun SensoresPPM(viewModel: viewM_Principal) {
                 ) {
                     SensorCard(
                         title = "Temperatura",
-                        valor = viewModel.ppmAir.value.toString(), // Placeholder para otro sensor
+                        valor = viewModel.ppmAir.collectAsState().value.toString(), // Placeholder para otro sensor
                         icon = painterResource(id = R.drawable.ico_wifi_off)
                     )
                     SensorCard(
                         title = "Presión",
-                        valor = viewModel.ppmCO2.value.toString(), // Placeholder para otro sensor
+                        valor = viewModel.ppmCO2.collectAsState().value.toString(), // Placeholder para otro sensor
                         icon = painterResource(id = R.drawable.icons8_hidr_geno_50)
                     )
                     SensorCard(
                         title = "Gas",
-                        valor = viewModel.ppmHumedad.value.toString(), // Placeholder para otro sensor
+                        valor = viewModel.ppmHumedad.collectAsState().value.toString(), // Placeholder para otro sensor
                         icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50)
                     )
                 }
