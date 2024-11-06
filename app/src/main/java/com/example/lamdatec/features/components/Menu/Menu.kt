@@ -76,6 +76,9 @@ fun Menu(
             coroutineScope.launch {
                 scaffoldState.drawerState.close()
                 menuViewModel.ActualizarselectedItem("INICIO")
+                navController.navigate(PantallasNav.PRINCIPAL.route) {
+                    launchSingleTop = true
+                }
        
             }
         }
@@ -86,7 +89,6 @@ fun Menu(
             icon = Icons.Default.Settings,
             isSelected = if (selectedItem.value=="SENSOR MQ2") true else false
         ) {
-
             Log.d("MenuViewModel", "Item seleccionado: ${selectedItem}")
             coroutineScope.launch {
                 scaffoldState.drawerState.close()
