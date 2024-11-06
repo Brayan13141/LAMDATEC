@@ -1,10 +1,21 @@
 package com.example.lamdatec.features.components
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,46 +62,86 @@ import com.google.ar.core.dependencies.i
 fun PantallaConGraficoGENERAL(
     navController: NavHostController,
     titulo: String,
-    puntosGrafico: List<Point>
+    puntosGrafico: List<Point>,
+    Valor : Int
 ) {
 
     PPantallas(navController, titulo) {
-        Column() {
+        Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Botones()
+
             if (puntosGrafico.isNotEmpty()) {
-                Box() {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, Color.Black, shape = MaterialTheme.shapes.large)
+                ) {
                     Grafico(puntosGrafico)
                 }
+                Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center)
+                {
+                    ValorCard( Valor.toString(), "PPP")
+                }
             }
-            ValorCard("NADA", "AUN")
+
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ValorCard(valor: String, descripcion: String) {
+    // Estado para rastrear el color del borde
+    var bordeColor by remember { mutableStateOf(Color.Transparent) }
+    // Cambiar a verde y luego volver a transparente
+    val animatedBorderColor by animateColorAsState(
+        targetValue = bordeColor,
+        animationSpec = tween(durationMillis = 500) // Duración de la animación
+    )
+
+    // Efecto que actualiza el color de borde cada vez que cambia el valor
+    LaunchedEffect(valor) {
+        bordeColor = Color(0xFF4CAF50) // Verde en el cambio
+        kotlinx.coroutines.delay(500) // Duración visible del verde
+        bordeColor = Color.Transparent // Vuelve a ser transparente
+    }
+
     Card(
-        shape = RoundedCornerShape(8.dp), // Esquinas redondeadas
-        elevation = CardDefaults.elevatedCardElevation(), // Sombra
-        modifier = androidx.compose.ui.Modifier
-            .size(width = 80.dp, height = 100.dp) // Tamaño del elemento
-            .padding(8.dp) // Espacio alrededor de la tarjeta
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.elevatedCardElevation(6.dp),
+        modifier = Modifier
+            .size(width = 100.dp, height = 80.dp)
+            .padding(8.dp)
+            .border(width = 2.dp, color = animatedBorderColor, shape = RoundedCornerShape(16.dp))
     ) {
         Column(
-            modifier = androidx.compose.ui.Modifier.padding(8.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = valor,
-                color = Color(0xFF4CAF50), // Color verde
-                style = MaterialTheme.typography.bodyMedium, // Tamaño grande para el valor
-                fontWeight = FontWeight.Bold
-            )
+            // Animación de cambio de valor
+            AnimatedContent(
+                targetState = valor,
+                transitionSpec = {
+                    fadeIn() with fadeOut()
+                }
+            ) { targetValor ->
+                Text(
+                    text = targetValor,
+                    color = Color(0xFF4CAF50),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = descripcion,
-                color = androidx.compose.ui.graphics.Color.Gray,
-                style = MaterialTheme.typography.bodyMedium // Tamaño pequeño para la descripción
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -98,10 +149,11 @@ fun ValorCard(valor: String, descripcion: String) {
 
 @Composable
 fun Botones() {
-    Column(modifier = androidx.compose.ui.Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp)
+    ) {
         // Filas de Fechas
         LazyRow(
-            modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val fechas = listOf(
@@ -111,7 +163,7 @@ fun Botones() {
             items(fechas.size - 1) { fecha ->
                 Card(
                     shape = MaterialTheme.shapes.small,
-                    modifier =  Modifier
+                    modifier = Modifier
                         .padding(4.dp)
                         .width(60.dp)
                 ) {
@@ -128,7 +180,7 @@ fun Botones() {
         }
         // Botones de selección debajo
         Row(
-            modifier = androidx.compose.ui.Modifier
+            modifier =Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -151,14 +203,14 @@ fun Botones() {
         }
     }
 }
+
 @Composable
 fun Grafico(Puntos: List<Point>) {
     var puntosGrafico by remember { mutableStateOf(Puntos) }
 
     // Actualizamos los puntos solo cuando los datos cambian
     LaunchedEffect(Puntos) {
-
-        puntosGrafico = Puntos.takeLast(10) // Mantener los últimos 10 puntos
+        puntosGrafico = Puntos.takeLast(9) // Mantener los últimos 10 puntos
     }
     val steps = 15
 
@@ -171,13 +223,19 @@ fun Grafico(Puntos: List<Point>) {
             derivedStateOf { puntosGrafico.minOfOrNull { it.y.toInt() } ?: 0 }
         }
 
+
         // Configuración del eje X
         val xAxisData = AxisData.Builder()
             .axisStepSize(40.dp)
             .backgroundColor(color = Color.White)
             .steps(steps)
-            .labelData { i ->
-                i.toString() }
+            .labelData { index ->
+                if (index < puntosGrafico.size) {
+                    puntosGrafico[index].x.toInt().toString() // Usa el valor `x` en cada punto
+                } else {
+                    ""
+                }
+            }
             .labelAndAxisLinePadding(10.dp)
             .build()
 
