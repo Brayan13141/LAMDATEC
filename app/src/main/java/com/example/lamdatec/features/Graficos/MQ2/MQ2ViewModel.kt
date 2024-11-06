@@ -11,7 +11,11 @@ import javax.inject.Inject
 class MQ2ViewModel @Inject constructor(
     private val repository: SensorMQ2RepositoryImp
 ) : ViewModel() {
+
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())
+        private set
+
+    var valorActual = MutableStateFlow<Float>(0f)
         private set
 
     init {
@@ -19,8 +23,9 @@ class MQ2ViewModel @Inject constructor(
     }
 
     private fun consultarDatosSensores() {
-        repository.consultarDatosSensores { puntos ->
-            puntosGrafico.value = puntos // Actualiza el estado de los puntos del gráfico
+        repository.consultarDatosSensores { (puntos, valor) ->
+            puntosGrafico.value = puntos       // Actualiza el estado de los puntos del gráfico
+            valorActual.value = valor          // Actualiza el estado del valor actual
         }
     }
 }
