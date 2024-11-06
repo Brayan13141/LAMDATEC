@@ -3,11 +3,19 @@ package com.example.lamdatec.features.Graficos.MQ2
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.model.Point
+import com.example.lamdatec.features.Graficos.MQ2.data.SensorMQ2RepositoryImp
 import com.example.lamdatec.features.Graficos.MQ7.data.SensorMQ7Repository
+import com.example.lamdatec.features.Graficos.MQ7.data.SensorMQ7RepositoryImp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class viewM_MQ7(private val repository: SensorMQ7Repository = SensorMQ7Repository()) : ViewModel() {
+@HiltViewModel
+class viewM_MQ7 @Inject constructor(
+    private val repository: SensorMQ7RepositoryImp
+) : ViewModel() {
+
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())
         private set
 
@@ -18,7 +26,7 @@ class viewM_MQ7(private val repository: SensorMQ7Repository = SensorMQ7Repositor
         }
     }
 
-    private suspend fun consultarDatosSensores() {
+    private fun consultarDatosSensores() {
         repository.consultarDatosSensores { puntos ->
             puntosGrafico.value = puntos // Actualiza el estado de los puntos del gráfico
         }
