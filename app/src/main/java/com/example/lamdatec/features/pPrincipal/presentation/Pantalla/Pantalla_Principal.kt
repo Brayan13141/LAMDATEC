@@ -67,18 +67,15 @@ fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal 
     }
 }
 
-
 @Composable
 fun SensoresPPM(viewModel: viewM_Principal) {
-
     // Tarjeta principal con bordes redondeados y fondo
     Card(
-        //shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .clip(RoundedCornerShape(18.dp))
             .fillMaxWidth()
             .padding(16.dp)
-                ) {
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Fecha y hora
             Row(
@@ -96,31 +93,63 @@ fun SensoresPPM(viewModel: viewM_Principal) {
                     fontSize = 16.sp
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Tarjetas de los sensores
-            SensorCard(
-                title = "Aire",
-                valor = viewModel.ppmAir.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50),
-                modifier = Modifier
-            )
-            SensorCard(
-                title = "Co2",
-                valor = viewModel.ppmCO2.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_co2_50),
-                modifier = Modifier
-            )
-            SensorCard(
-                title = "H",
-                valor = viewModel.ppmHumedad.value.toString(),
-                icon = painterResource(id = R.drawable.icons8_hidr_geno_50),
-                modifier = Modifier
-            )
+            // Dos columnas para mostrar los seis sensores
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                // Primera columna de sensores
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    SensorCard(
+                        title = "Aire",
+                        valor = viewModel.ppmAir.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50)
+                    )
+                    SensorCard(
+                        title = "CO2",
+                        valor = viewModel.ppmCO2.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_co2_50)
+                    )
+                    SensorCard(
+                        title = "Humedad",
+                        valor = viewModel.ppmHumedad.value.toString(),
+                        icon = painterResource(id = R.drawable.icons8_hidr_geno_50)
+                    )
+                }
+
+                // Segunda columna de sensores
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    SensorCard(
+                        title = "Temperatura",
+                        valor = viewModel.ppmAir.value.toString(), // Placeholder para otro sensor
+                        icon = painterResource(id = R.drawable.ico_wifi_off)
+                    )
+                    SensorCard(
+                        title = "Presión",
+                        valor = viewModel.ppmCO2.value.toString(), // Placeholder para otro sensor
+                        icon = painterResource(id = R.drawable.icons8_hidr_geno_50)
+                    )
+                    SensorCard(
+                        title = "Gas",
+                        valor = viewModel.ppmHumedad.value.toString(), // Placeholder para otro sensor
+                        icon = painterResource(id = R.drawable.icons8_calidad_del_aire_50)
+                    )
+                }
+            }
         }
     }
 }
+
+
 @Composable
 fun MotoAnimationScreen(viewModel: viewM_Principal) {
     val isMotoOn by remember { viewModel.isMotoOn }
@@ -265,42 +294,54 @@ fun MotoAnimationScreen(viewModel: viewM_Principal) {
         }
     }
 }
-
 @Composable
-fun SensorCard(title: String, icon: Painter, valor: String, modifier: Modifier) {
+fun SensorCard(
+    title: String,
+    icon: Painter,
+    valor: String,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 4.dp) // Reducimos el padding vertical para un diseño más compacto
+            .clip(shape = MaterialTheme.shapes.small),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Icono
         Icon(
             painter = icon,
             contentDescription = title,
             modifier = Modifier
-                .padding(16.dp)
-                .size(32.dp),
+                .padding(8.dp) // Reducimos el padding alrededor del icono
+                .size(24.dp), // Reducimos el tamaño del icono
             tint = Color.Black
         )
 
         // Texto del título
         Text(
             text = title,
-            fontSize = 18.sp,
+            fontSize = 14.sp, // Reducimos el tamaño de la fuente del título
             color = Color.Black,
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 8.dp)
+                .padding(start = 4.dp) // Menor padding lateral
         )
+
         // Valor del sensor
         Text(
             text = valor,
-            fontSize = 18.sp,
-            color = Color.Green, // Color verde
-            modifier = Modifier.padding(end = 16.dp)
-
+            fontSize = 14.sp, // Reducimos el tamaño de la fuente del valor
+            color = Color.Green,
+            modifier = Modifier.padding(end = 8.dp) // Menor padding al final
         )
     }
-    Divider(modifier = Modifier.height(1.dp))
+
+    // Divider más delgado para una separación visual ligera
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(0.5.dp), // Hacemos el Divider más delgado
+        color = Color.Gray.copy(alpha = 0.5f)
+    )
 }
