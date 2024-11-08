@@ -1,6 +1,5 @@
 package com.example.lamdatec.features.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
@@ -33,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,17 +54,15 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
-import com.google.ar.core.dependencies.i
 
 @Composable
 fun PantallaConGraficoGENERAL(
     navController: NavHostController,
-    titulo: String,
     puntosGrafico: List<Point>,
-    Valor : Int
+    valor : Int
 ) {
 
-    PPantallas(navController, titulo) {
+    PPantallas(navController) {
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Botones()
 
@@ -80,7 +76,7 @@ fun PantallaConGraficoGENERAL(
                 }
                 Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center)
                 {
-                    ValorCard( Valor.toString(), "PPP")
+                    ValorCard( valor.toString(), "PPP")
                 }
             }
 

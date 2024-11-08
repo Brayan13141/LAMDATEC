@@ -3,25 +3,24 @@ package com.example.lamdatec.features.Graficos.MQ7.data
 import android.util.Log
 import com.google.firebase.database.*
 import co.yml.charts.common.model.Point
-import dagger.hilt.android.scopes.ViewModelScoped
-import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 interface SensorMQ7Repository {
     fun consultarDatosSensores(actualizar: (List<Point>) -> Unit)
 }
 
-@ViewModelScoped
+@Singleton
 class SensorMQ7RepositoryImp @Inject constructor(
     private val db: FirebaseDatabase
 ) : SensorMQ7Repository {
+
     override fun consultarDatosSensores(actualizar: (List<Point>) -> Unit) {
         var airValues : List<Float> = listOf()
-        val database = db.reference
 
-        database.child("LAMDATEC/Sensores/SENSORES/MQ7/Valor").get().addOnSuccessListener { snapshot ->
-            database.child("LAMDATEC/Sensores/SENSORES/MQ7/Valor").addValueEventListener(object : ValueEventListener {
+        db.reference.child("LAMDATEC/Sensores/SENSORES/MQ7/Valor").get().addOnSuccessListener { snapshot ->
+            db.reference.child("LAMDATEC/Sensores/SENSORES/MQ7/Valor").addValueEventListener(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val valor = snapshot.getValue(Int::class.java) ?: 0
@@ -29,10 +28,10 @@ class SensorMQ7RepositoryImp @Inject constructor(
                     actualizar(airValues.mapIndexed { index, value ->
                         Point(index.toFloat(), value)
                     })
-                    //Log.e("Firebase", "Valor actualizado en Firebase: $valor")
+                    Log.e("Firebase", "Valor actualizado en Firebase: $valor")
                 }
                 override fun onCancelled(error: DatabaseError) {
-              //
+                    //
                 }
             })
         }.addOnFailureListener { exception ->

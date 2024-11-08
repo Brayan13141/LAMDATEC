@@ -21,7 +21,8 @@ fun GraficoMQ2_VISTA(
 ) {
     val puntosGrafico = viewModel.puntosGrafico.collectAsState()
     val valorActual = viewModel.valorActual.collectAsState()
-    PantallaConGraficoGENERAL(navController, "MQ2", puntosGrafico.value,valorActual.value.toInt())
+
+    PantallaConGraficoGENERAL(navController, puntosGrafico.value,valorActual.value.toInt())
 
 }
 

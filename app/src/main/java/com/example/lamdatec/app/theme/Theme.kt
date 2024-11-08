@@ -1,11 +1,16 @@
 
 package com.example.lamdatec.app.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import com.example.compose.*
 private val DarkColorScheme = darkColorScheme(
         primary = primaryDark,
@@ -84,6 +89,9 @@ private val LightColorScheme = lightColorScheme(
 
 )
 
+val green = Color(0xff06C167)
+val onGreen = Color.White
+
 @Composable
 fun LAMDATECTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -92,10 +100,10 @@ fun LAMDATECTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        /*dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }*/
+        }
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme

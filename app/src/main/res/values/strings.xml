@@ -5,4 +5,11 @@
     <string name="lblPassword">Contraseña</string>
     <string name="btnLogIn">Ingresar</string>
     <string name="lblSensor1">SENSOR 1</string>
+    <string name="lblSensorMQ2">Sensor MQ2</string>
+    <string name="lblSensorMQ7">Sensor MQ7</string>
+    <string name="lblLogOut">Cerrar sesion</string>
+    <string name="lblWelcome">Bienvenido a Lamdatec</string>
+    <string name="lblOpenMenu">Icono para abrir menu lateral</string>
+    <string name="lblHome">Inicio</string>
+    <string name="lblAccount">Cuenta</string>
 </resources>

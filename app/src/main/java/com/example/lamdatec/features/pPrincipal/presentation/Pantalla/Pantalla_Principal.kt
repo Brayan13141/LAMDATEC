@@ -43,14 +43,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.lamdatec.R
 import com.example.lamdatec.features.components.PPantallas
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import androidx.compose.material3.Button
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun PantallaInicio(navController: NavHostController, viewModel: viewM_Principal = viewModel()) {
-    PPantallas(navController, "BIENVENIDO A LAMDATEC") {
+fun PantallaInicio(
+    viewModel: viewM_Principal = viewModel(),
+    navController: NavHostController
+) {
+    PPantallas(
+        navController = navController
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
