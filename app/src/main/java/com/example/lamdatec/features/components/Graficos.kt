@@ -1,5 +1,6 @@
 package com.example.lamdatec.features.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
@@ -9,10 +10,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,17 +55,23 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import com.example.lamdatec.features.Graficos.MQ2.data.FiltrosFecha
 
 @Composable
 fun PantallaConGraficoGENERAL(
     navController: NavHostController,
+    titulo: String,
     puntosGrafico: List<Point>,
-    valor : Int
+    Valor: Int,
+    fechas : Pair<List<String>, List<String>>,
+    onFiltroSeleccionado: (FiltrosFecha) -> Unit
 ) {
 
     PPantallas(navController) {
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-            Botones()
+            Botones(fechas) { filtroSeleccionado ->
+                onFiltroSeleccionado(filtroSeleccionado)
+            }
 
             if (puntosGrafico.isNotEmpty()) {
                 Box(
@@ -74,12 +81,12 @@ fun PantallaConGraficoGENERAL(
                 ) {
                     Grafico(puntosGrafico)
                 }
-                Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center)
-                {
-                    ValorCard( valor.toString(), "PPP")
-                }
-            }
 
+            }
+            Box(modifier = Modifier.padding(16.dp), contentAlignment = Alignment.Center)
+            {
+                ValorCard(Valor.toString(), "PPP")
+            }
         }
     }
 }
@@ -95,7 +102,7 @@ fun ValorCard(valor: String, descripcion: String) {
         animationSpec = tween(durationMillis = 500) // Duración de la animación
     )
 
-    // Efecto que actualiza el color de borde cada vez que cambia el valor
+    //Efecto que actualiza el color de borde cada vez que cambia el valor
     LaunchedEffect(valor) {
         bordeColor = Color(0xFF4CAF50) // Verde en el cambio
         kotlinx.coroutines.delay(500) // Duración visible del verde
@@ -144,70 +151,118 @@ fun ValorCard(valor: String, descripcion: String) {
 }
 
 @Composable
-fun Botones() {
-    Column(modifier = Modifier.padding(16.dp)
+fun Botones(
+    fechas: Pair<List<String>, List<String>>,  // Recibe el par de listas de fechas
+    onFiltroSeleccionado: (FiltrosFecha) -> Unit
+) {
+    var BotonFechaI by remember { mutableStateOf(-1) }
+    var BotonCategoI by remember { mutableStateOf(-1) }
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
     ) {
-        // Filas de Fechas
+        // Usamos fechas.first o fechas.second según el caso
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val fechas = listOf(
-                "01 OCT", "02 OCT", "03 OCT", "04 OCT", "05 OCT", "06 OCT",
-                "07 OCT", "08 OCT", "09 OCT", "10 OCT"
-            ) // Agrega más fechas si necesitas
-            items(fechas.size - 1) { fecha ->
+            items(fechas.first.size) { fechaIndex ->
+                val D = fechas.first[fechaIndex]
+                val M = fechas.second[fechaIndex]
+                val isSelected = (BotonFechaI == fechaIndex) && BotonCategoI == 0
+                val animatedBorderColor by animateColorAsState(
+                    targetValue = if (isSelected) Color(0xFF4CAF50) else Color.LightGray,
+                    animationSpec = tween(durationMillis = 300)
+                )
                 Card(
-                    shape = MaterialTheme.shapes.small,
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.elevatedCardElevation(4.dp),
                     modifier = Modifier
+                        .width(70.dp)
                         .padding(4.dp)
-                        .width(60.dp)
-                ) {
-                    Text(
-                        text = fechas.get(fecha).toString(),
-                        color = Color.White,
-                        modifier = Modifier.padding(
-                            vertical = 8.dp,
-                            horizontal = 12.dp
+                        .border(
+                            width = 2.dp,
+                            color = animatedBorderColor,
+                            shape = RoundedCornerShape(12.dp)
                         )
-                    )
+                        .clickable {
+                            BotonFechaI = if (isSelected) -1 else fechaIndex
+                        }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(if (isSelected) Color(0xFF4CAF50) else Color.White)
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = D +"-"+ Mes(M.toInt()),
+                            color = if (isSelected) Color.White else Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
         }
-        // Botones de selección debajo
-        Row(
-            modifier =Modifier
+
+        // Los botones de opciones de filtro
+        LazyRow(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val opciones = listOf("Por día", "Por semana", "Por mes", "Rango")
-            opciones.forEach { opcion ->
+            val opciones = listOf(
+                FiltrosFecha.DIA to "Por día",
+                FiltrosFecha.SEMANA to "Por semana",
+                FiltrosFecha.MES to "Por mes"
+            )
+            items(opciones.size) { opcionIndex ->
+                val (filtro, label) = opciones[opcionIndex]
+
+                var isSelected = BotonCategoI == opcionIndex
+                val buttonBackgroundColor by animateColorAsState(
+                    targetValue = if (isSelected) Color(0xFF4CAF50) else Color.LightGray,
+                    animationSpec = tween(durationMillis = 300)
+                )
                 Button(
-                    onClick = { /* Acción para cada botón */ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (opcion == "Por día") androidx.compose.ui.graphics.Color.Black else androidx.compose.ui.graphics.Color.LightGray
-                    ),
-                    modifier = Modifier.padding(4.dp)
+                    onClick = {
+                        BotonCategoI = if (isSelected) -1 else opcionIndex
+                        isSelected = BotonCategoI == opcionIndex
+
+                        if (isSelected) {
+                            onFiltroSeleccionado(filtro)
+                            BotonFechaI = -1
+                        } else {
+                            onFiltroSeleccionado(FiltrosFecha.NINGUNO)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = buttonBackgroundColor),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .width(100.dp)
+                        .padding(vertical = 4.dp)
                 ) {
                     Text(
-                        text = opcion,
-                        color = if (opcion == "Por día") androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black
+                        text = label,
+                        color = if (isSelected) Color.White else Color.Black,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
         }
     }
 }
-
 @Composable
 fun Grafico(Puntos: List<Point>) {
     var puntosGrafico by remember { mutableStateOf(Puntos) }
 
-    // Actualizamos los puntos solo cuando los datos cambian
-    LaunchedEffect(Puntos) {
-        puntosGrafico = Puntos.takeLast(9) // Mantener los últimos 10 puntos
-    }
+    puntosGrafico = Puntos.takeLast(10) // Mantener los últimos 10 puntos
+
     val steps = 15
 
     if (puntosGrafico.isNotEmpty()) {
@@ -293,4 +348,13 @@ fun Grafico(Puntos: List<Point>) {
             lineChartData = lineChartData
         )
     }
+}
+// Función para obtener el nombre del mes en formato de texto
+
+private fun Mes(monthNumber: Int): String {
+    val months = listOf(
+        "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
+        "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
+    )
+    return months.getOrElse(monthNumber - 1) { "Mes Desconocido" }
 }
