@@ -1,9 +1,17 @@
 package com.example.lamdatec.features.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.DrawerValue
@@ -12,13 +20,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.lamdatec.R
 import com.example.lamdatec.app.theme.green
@@ -36,7 +50,6 @@ fun PPantallas(
     val drawerState = rememberDrawerState(
         initialValue = DrawerValue.Closed
     )
-
     val openDrawer = {
         coroutineScope.launch {
             drawerState.open()
@@ -53,9 +66,9 @@ fun PPantallas(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
+                TopAppBar(modifier = Modifier,
                     title = {
-
+                    botonesPrincipales()
                     },
                     navigationIcon = {
                         IconButton(
@@ -87,4 +100,66 @@ fun PPantallas(
             }
         }
     }
+}
+
+@Composable
+fun botonesPrincipales()
+{
+    Text(
+        text = "Titulo",
+        fontSize = 24.sp,
+        color = Color.White
+    )
+    Row(
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 30.dp, bottom = 10.dp)
+    ) {
+        // Icono de Bluetooth
+        IconButton(
+            onClick = { /* Acción para Bluetooth */ },
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.White, RoundedCornerShape(8.dp))
+                .padding(4.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.icons8_hidr_geno_50), // Reemplaza con tu recurso
+                contentDescription = "Bluetooth",
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        // Icono de Wi-Fi
+        IconButton(
+            onClick = { /* Acción para Wi-Fi */ },
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.White, RoundedCornerShape(8.dp))
+                .padding(4.dp)
+        ) {
+            Icon(modifier = Modifier.size(80.dp),
+                painter = painterResource(id = R.drawable.ico_wifi_off), // Reemplaza con tu recurso
+                contentDescription = "Wi-Fi",
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        // Estado de conexión
+        Box(
+            modifier = Modifier
+                .background(Color.White, RoundedCornerShape(8.dp))
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            Text(
+                text = "Conectado",
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+        }
+    }
+
 }
