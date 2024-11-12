@@ -22,22 +22,18 @@ fun GraficoMQ2_VISTA(
 ) {
     val puntosGrafico = viewModel.puntosGrafico.collectAsState()
     val valorActual = viewModel.valorActual.collectAsState()
-    val Dias = viewModel.Dias.collectAsState()
-    val Meses = viewModel.Meses.collectAsState()
+     val Fechas = viewModel.Fechas.collectAsState()
 
     PantallaConGraficoGENERAL(navController, "MQ2", puntosGrafico.value,valorActual.value.toInt(),
-    fechas = Pair(Dias.value, Meses.value)
-    )
+    fechas = Fechas.value)
     {
-        filtro ->
-        viewModel.valorActualFiltro.value = filtro
-        Log.e("filtro-PG",filtro.toString())
+        viewModel.Actualizarfiltros(it.first,it.second?.toString())
         viewModel.obtenerFechasDisponibles()
         if (viewModel.valorActualFiltro.value != FiltrosFecha.NINGUNO)
         {
-
             viewModel.limpiarPuntos()
-            viewModel.consultarDatosConFiltro(filtro = filtro)
+            Log.e("filtro-PG",it.first.toString() +" "+it.second.toString())
+            viewModel.consultarDatosConFiltro(filtro = viewModel.valorActualFiltro.value,fecha = viewModel.valorActualFiltrosFecha.value)
         }else{
             viewModel.limpiarPuntos()
             viewModel.consultarDatosSensores()
