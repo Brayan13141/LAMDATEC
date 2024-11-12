@@ -14,10 +14,10 @@ interface SensorMQ2Repository {
     fun consultarDatosSensores(actualizar: (Pair<List<Point>, Float>) -> Unit)
     fun consultarDatosSensoresConFiltro(
         filtro: FiltrosFecha,
-        dia: Int? = null,
+        dia: String? = null,
         actualizar: (Pair<List<Point>, Float>) -> Unit
     )
-    fun obtenerFechasDisponibles(actualizar: (Pair<List<String>, List<String>>) -> Unit)
+    fun obtenerFechasDisponibles(actualizar: (List<String>) -> Unit)
 }
 
 @Singleton
@@ -59,7 +59,7 @@ class SensorMQ2RepositoryImp @Inject constructor(
 
 // DATOS DEL SENSOR CON FILTROS
     override fun consultarDatosSensoresConFiltro(
-                filtro: FiltrosFecha, dia: Int?, actualizar: (Pair<List<Point>, Float>) -> Unit
+                filtro: FiltrosFecha, Fecha: String?, actualizar: (Pair<List<Point>, Float>) -> Unit
     ) {
         val ref = db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/FECHAS")
 
@@ -68,16 +68,17 @@ class SensorMQ2RepositoryImp @Inject constructor(
                 val puntos = mutableListOf<Point>()
                 var valorActual = 0f
 
-                // Obtener la fecha actual y aplicar el filtro
+                //-------------------------------- Obtener la fecha actual y aplicar el filtro PARA DIA ACTUAL--------------------------------
                 val calendar = Calendar.getInstance()
                 val formatoFecha = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val fechaFormateada = formatoFecha.format(calendar.time)
+                val fechaActualFormateada = formatoFecha.format(calendar.time)
 
                 for (fechaSnapshot in snapshot.children) {
-                    val fecha = fechaSnapshot.key ?: continue
-                    val fechaActualDate: Date = formatoFecha.parse(fechaFormateada) ?: Date()
+                    val fecha = fechaSnapshot.key ?: continue//REGISTO_FECHA_FIREBASE
+                    val fechaActualDate: Date = formatoFecha.parse(fechaActualFormateada) ?: Date()
                     val fechaFirebaseDate: Date = formatoFecha.parse(fecha) ?: Date()
 
+                //--------------------------------FILTRO PARA LOS FILTROS--------------------------------
                     val incluirFecha = when(filtro) {
                         FiltrosFecha.DIA -> {
                             val incluirFecha = isSameDay(calendar.time, fechaActualDate)
@@ -97,22 +98,44 @@ class SensorMQ2RepositoryImp @Inject constructor(
                             Pair(incluirFecha, "Ninguno")
                         }
                     }
-                    if (incluirFecha.first==true && incluirFecha.second == "Dia") {
+                    //-------------------------------- DATOS DE LA BD DIA ACTUAL--------------------------------
+                    if (incluirFecha.first==true && incluirFecha.second == "Dia" && Fecha == "") {
                         for (horaSnapshot in fechaSnapshot.children) {
-                          //  Log.e("REPOMQ2", "fechaSnapshot : ${fechaSnapshot}")
-                            if (fechaSnapshot.key == fechaFormateada)
+                           //Log.e("REPOMQ2-FECHAS", "fechaSnapshot : ${fechaSnapshot}")
+                            //SE FILTRAN LOS DATOS EN BASE A LA FECHA ACTUAL(SNAPSHOT) Y LA FORMATEADA(DIAACTUAL)
+                            if (fechaSnapshot.key == fechaActualFormateada)
                             {
+                                //PARA CADA REGISTRO DENTRO DE LA FECHA ACTUAL
                                 for(Valor in horaSnapshot.children)
                                 {
                                     val hora = horaSnapshot.key ?: continue
                                     val valor = horaSnapshot.child("VSENSOR").getValue(Float::class.java) ?: 0f
-                                   // Log.e("REPOMQ2", "HORA BD : $hora- VALOR: $valor ")
+                                   //Log.e("REPOMQ2", "HORA BD : $hora- VALOR: $valor ")
                                     puntos.add(Point(puntos.size.toFloat(), valor))
                                     valorActual = valor // Actualiza al último valor encontrado
                                 }
 
                             }
+                        }
+                        //-------------------------------- DATOS DE LA BD DIA SELECCIONADO--------------------------------
+                    }
+                    else if (incluirFecha.first==true && incluirFecha.second == "Dia" && Fecha != "") {
+                          for (horaSnapshot in fechaSnapshot.children) {
+                              //Log.e("REPOMQ2-FECHAS", "fechaSnapshot : ${fechaSnapshot}")
+                              //Log.e("REPOMQ2-FECHAS", "fechaCREADA : $Fecha")
+                              //Log.e("REPOMQ2-FECHAS", "KEY : ${fechaSnapshot.key}")
+                              if (fechaSnapshot.key == Fecha)
+                            {
+                                for(Valor in horaSnapshot.children)
+                                {
+                                    val hora = horaSnapshot.key ?: continue
+                                    val valor = horaSnapshot.child("VSENSOR").getValue(Float::class.java) ?: 0f
+                                    Log.e("REPOMQ2", "HORA BD : $hora- VALOR: $valor ")
+                                    puntos.add(Point(puntos.size.toFloat(), valor))
+                                    valorActual = valor // Actualiza al último valor encontrado
+                                }
 
+                            }
                         }
                     }
                 }
@@ -125,44 +148,19 @@ class SensorMQ2RepositoryImp @Inject constructor(
             }
         })
     }
-// FECHAS PARA LOS BOTONES
-override fun obtenerFechasDisponibles(actualizar: (Pair<List<String>,List<String>>) -> Unit) {
-    var Dias: List<String> = listOf()
-    var Mes: List<String> = listOf()
-    // Acceso a la referencia de la base de datos
-    db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/FECHAS").get().addOnSuccessListener {
-        db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/FECHAS")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val dataMap = snapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {}) ?: emptyMap()
-                    // Iterar sobre las fechas en el mapa
-                    for ((key, value) in dataMap) {
-                        // Convierte la clave de fecha completa en un formato de día y mes
-                        val dateParts = key.toString().split("-") // Asumiendo formato "YYYY-MM-DD"
-                        if (dateParts.size == 3) {
-                            val day = dateParts[2] // Día
-                            val month = dateParts[1]// getMonthName(dateParts[1].toInt()) // Mes
-                            Dias = Dias + day
-                            Mes = Mes + month
-                        }
-                    }
-                    actualizar(Pair(Dias, Mes))
-                }
+    override fun obtenerFechasDisponibles(actualizar: (List<String>) -> Unit) {
+        val ref = db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/FECHAS")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val fechas = snapshot.children.mapNotNull { it.key }
+                actualizar(fechas)
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Error al obtener datos: ${error.message}")
-                }
-            })
-    }.addOnFailureListener { exception ->
-        Log.e("Firebase", "Error al leer los valores: ${exception.message}")
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error al obtener datos: ${error.message}")
+            }
+        })
     }
-}
-
-
-
-
-
-
 
     // Función para verificar si es el mismo día
     private fun isSameDay(fecha1: Date, fecha2: Date): Boolean {
