@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -41,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.yml.charts.axis.AxisData
@@ -63,14 +67,13 @@ fun PantallaConGraficoGENERAL(
     titulo: String,
     puntosGrafico: List<Point>,
     Valor: Int,
-    fechas : Pair<List<String>, List<String>>,
-    onFiltroSeleccionado: (FiltrosFecha) -> Unit
+    fechas: List<String>,
+    FiltroSeleccionado: (Pair<FiltrosFecha, String?>) -> Unit
 ) {
-
     PPantallas(navController) {
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Botones(fechas) { filtroSeleccionado ->
-                onFiltroSeleccionado(filtroSeleccionado)
+                FiltroSeleccionado(filtroSeleccionado)
             }
 
             if (puntosGrafico.isNotEmpty()) {
@@ -91,6 +94,7 @@ fun PantallaConGraficoGENERAL(
     }
 }
 
+//CARD DE PPM
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ValorCard(valor: String, descripcion: String) {
@@ -150,28 +154,38 @@ fun ValorCard(valor: String, descripcion: String) {
     }
 }
 
+
+//BOTONES DE FILTRADO
 @Composable
 fun Botones(
-    fechas: Pair<List<String>, List<String>>,  // Recibe el par de listas de fechas
-    onFiltroSeleccionado: (FiltrosFecha) -> Unit
+    fechas: List<String>,  // Recibe el par de listas de fechas
+    FiltroSeleccionado: (Pair<FiltrosFecha, String?>) -> Unit
 ) {
+    //INDICES PARA LOS BOTONES DE FILTRADO
     var BotonFechaI by remember { mutableStateOf(-1) }
     var BotonCategoI by remember { mutableStateOf(-1) }
+    //FILTRO SELECCIONADO
+    var filtroI: FiltrosFecha by remember { mutableStateOf(FiltrosFecha.NINGUNO) }
+    val dateParts = obtenerDiasYMeses(fechas)
 
     Column(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        // Usamos fechas.first o fechas.second según el caso
+        if (BotonCategoI == 0)
+            Texto_Linea(text = "Dia")
+        else
+            Texto_Linea(text = "No disponible")
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(fechas.first.size) { fechaIndex ->
-                val D = fechas.first[fechaIndex]
-                val M = fechas.second[fechaIndex]
-                val isSelected = (BotonFechaI == fechaIndex) && BotonCategoI == 0
+            items(dateParts.first.size) { fechaIndex ->
+                val D = dateParts.first[fechaIndex]
+                val M = dateParts.second[fechaIndex]
+                val Fecha = dateParts.third[fechaIndex]
+                var isSelected = (BotonFechaI == fechaIndex) && BotonCategoI == 0
                 val animatedBorderColor by animateColorAsState(
                     targetValue = if (isSelected) Color(0xFF4CAF50) else Color.LightGray,
                     animationSpec = tween(durationMillis = 300)
@@ -188,7 +202,15 @@ fun Botones(
                             shape = RoundedCornerShape(12.dp)
                         )
                         .clickable {
-                            BotonFechaI = if (isSelected) -1 else fechaIndex
+                            //ASEGURAR QUE LA CATEGORIA DIA ESTA SELECCOINADA
+                            if (BotonCategoI == 0) {
+                                BotonFechaI = if (isSelected) -1 else fechaIndex
+                                isSelected = BotonFechaI == fechaIndex
+                                if (isSelected) {
+                                    FiltroSeleccionado(Pair(filtroI, Fecha))
+                                }
+                            }
+                            // Log.e("BOTON-FECHA", "SELECCIONADO: $isSelected - FECHA: $BotonFechaI")
                         }
                 ) {
                     Box(
@@ -199,7 +221,7 @@ fun Botones(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = D +"-"+ Mes(M.toInt()),
+                            text = D + "-" + Mes(M.toInt()),
                             color = if (isSelected) Color.White else Color.Black,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.bodyMedium
@@ -208,7 +230,7 @@ fun Botones(
                 }
             }
         }
-
+        Texto_Linea(text = "Filtrar por:")
         // Los botones de opciones de filtro
         LazyRow(
             modifier = Modifier
@@ -223,7 +245,6 @@ fun Botones(
             )
             items(opciones.size) { opcionIndex ->
                 val (filtro, label) = opciones[opcionIndex]
-
                 var isSelected = BotonCategoI == opcionIndex
                 val buttonBackgroundColor by animateColorAsState(
                     targetValue = if (isSelected) Color(0xFF4CAF50) else Color.LightGray,
@@ -231,14 +252,17 @@ fun Botones(
                 )
                 Button(
                     onClick = {
+                        //LA PRIMERA VEZ SE LLAMAN LOS DATOS DEL DIA ACTUAL ENVIANDO NULL COMO PARAMETRO
                         BotonCategoI = if (isSelected) -1 else opcionIndex
                         isSelected = BotonCategoI == opcionIndex
-
-                        if (isSelected) {
-                            onFiltroSeleccionado(filtro)
+                        // Log.e("BOTON-CATEG", "SELECCIONADO: $isSelected - VALOR: $BotonCategoI")
+                        if (opcionIndex != 0)
                             BotonFechaI = -1
+                        if (isSelected) {
+                            filtroI = filtro
+                            FiltroSeleccionado(Pair(filtro, null))
                         } else {
-                            onFiltroSeleccionado(FiltrosFecha.NINGUNO)
+                            FiltroSeleccionado(Pair(FiltrosFecha.NINGUNO, null))
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonBackgroundColor),
@@ -257,6 +281,8 @@ fun Botones(
         }
     }
 }
+
+
 @Composable
 fun Grafico(Puntos: List<Point>) {
     var puntosGrafico by remember { mutableStateOf(Puntos) }
@@ -349,12 +375,66 @@ fun Grafico(Puntos: List<Point>) {
         )
     }
 }
-// Función para obtener el nombre del mes en formato de texto
 
+
+// Función para obtener el nombre del mes en formato de texto
 private fun Mes(monthNumber: Int): String {
     val months = listOf(
         "ENE", "FEB", "MAR", "ABR", "MAY", "JUN",
         "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"
     )
     return months.getOrElse(monthNumber - 1) { "Mes Desconocido" }
+}
+
+//TEXTO ENTRE 2 LINEAS..
+@Composable
+fun Texto_Linea(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Gray,
+    padding: Dp = 8.dp
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Divider(
+            color = color,
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = padding)
+        )
+
+        Text(
+            text = text,
+            color = color,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
+        )
+
+        Divider(
+            color = color,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = padding)
+        )
+    }
+}
+
+
+fun obtenerDiasYMeses(fechas: List<String>): Triple<List<String>, List<String>,List<String>> {
+    var Dias: List<String> = emptyList()
+    var Meses: List<String> = emptyList()
+    var fechas1: List<String> = emptyList()
+    fechas.forEach { fecha ->
+        val dateParts = fecha.split("-")
+        if (dateParts.size == 3) {
+            val Dia = dateParts[2]
+            val Mes = dateParts[1]
+            Dias = Dias + Dia
+            Meses = Meses + Mes
+            fechas1 = fechas1 + fecha
+        }
+    }
+    return Triple(Dias, Meses, fechas1)
 }
