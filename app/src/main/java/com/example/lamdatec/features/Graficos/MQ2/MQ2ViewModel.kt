@@ -14,20 +14,24 @@ import javax.inject.Inject
 class MQ2ViewModel @Inject constructor(
     private val repository: SensorMQ2RepositoryImp
 ) : ViewModel() {
-
+    //-------------------------------------TIEMPO REAL-----------------------------
     var puntosGrafico = MutableStateFlow<List<Point>>(emptyList())
         private set
     var valorActual = MutableStateFlow<Float>(0f)
         private set
-    //------------------------------------------------------------------------------------------
+
+    //-------------------------------VALORES PARA FILTRAR-------------------------------------------------------
     var valorActualFiltro = MutableStateFlow<FiltrosFecha>(FiltrosFecha.NINGUNO)
         private set
+    var valorActualFiltrosFecha = MutableStateFlow<String>("")
+        private set
 
-    var Dias = MutableStateFlow<List<String>>(emptyList())
+    //-------------------------------------------FECHAS BOTONES---------------------------------
+
+    var Fechas = MutableStateFlow<List<String>>(emptyList())
         private set
-    var Meses = MutableStateFlow<List<String>>(emptyList())
-        private set
-    //------------------------------------------------------------------------------------------
+
+    //-----------------------------------------FUNCIONES-------------------------------------------------
     fun limpiarPuntos() {
         puntosGrafico.value = emptyList()
     }
@@ -51,10 +55,10 @@ class MQ2ViewModel @Inject constructor(
         }
     }
 
-    fun consultarDatosConFiltro(filtro: FiltrosFecha) {
+    fun consultarDatosConFiltro(filtro: FiltrosFecha, fecha: String? = null) {
         viewModelScope.launch {
             valorActualFiltro.value = filtro
-            repository.consultarDatosSensoresConFiltro(filtro, dia = 0) { (puntos, valor) ->
+            repository.consultarDatosSensoresConFiltro(filtro, Fecha = fecha) { (puntos, valor) ->
                 if (valorActualFiltro.value != FiltrosFecha.NINGUNO) {
                     puntosGrafico.value =
                         puntos       // Actualiza el estado de los puntos del gráfico
@@ -66,11 +70,17 @@ class MQ2ViewModel @Inject constructor(
 
     }
 
+    fun Actualizarfiltros(filtro: FiltrosFecha, fecha: String? = null) {
+        valorActualFiltro.value = filtro
+        fecha?.let {
+            valorActualFiltrosFecha.value = fecha
+        }
+    }
+
     fun obtenerFechasDisponibles() {
         viewModelScope.launch {
-            repository.obtenerFechasDisponibles { (fechasR, valorM) ->
-                    Dias.value = fechasR
-                    Meses.value = valorM
+            repository.obtenerFechasDisponibles { Fechas1->
+              Fechas.value = Fechas1
             }
         }
     }
