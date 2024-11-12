@@ -15,11 +15,12 @@ fun GraficoMQ7_VISTA(
 ) {
 
     val puntosGrafico by viewModel.puntosGrafico.collectAsState()
-
+/*
     PantallaConGraficoGENERAL(
         navController = navController,
         puntosGrafico = puntosGrafico,
-        valor = 0
-    )
-}
+        titulo = "MQ7",
+        Valor = 0){
+    }
+*/}
 
