@@ -1,5 +1,6 @@
 package com.example.lamdatec.features.Graficos.MQ2
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.model.Point
@@ -47,8 +48,7 @@ class MQ2ViewModel @Inject constructor(
         viewModelScope.launch {
             repository.consultarDatosSensores { (puntos, valor) ->
                 if (valorActualFiltro.value == FiltrosFecha.NINGUNO) {
-                    puntosGrafico.value =
-                        puntos       // Actualiza el estado de los puntos del gráfico
+                    puntosGrafico.value = puntos // Actualiza el estado de los puntos del gráfico
                     valorActual.value = valor          // Actualiza el estado del valor actual
                 }
             }
@@ -60,8 +60,7 @@ class MQ2ViewModel @Inject constructor(
             valorActualFiltro.value = filtro
             repository.consultarDatosSensoresConFiltro(filtro, Fecha = fecha) { (puntos, valor) ->
                 if (valorActualFiltro.value != FiltrosFecha.NINGUNO) {
-                    puntosGrafico.value =
-                        puntos       // Actualiza el estado de los puntos del gráfico
+                    puntosGrafico.value = puntos       // Actualiza el estado de los puntos del gráfico
                     valorActual.value = valor          // Actualiza el estado del valor actual
                 }
 
@@ -70,7 +69,7 @@ class MQ2ViewModel @Inject constructor(
 
     }
 
-    fun Actualizarfiltros(filtro: FiltrosFecha, fecha: String? = null) {
+    fun Actualizarfiltros(filtro: FiltrosFecha, fecha: String? = "") {
         valorActualFiltro.value = filtro
         fecha?.let {
             valorActualFiltrosFecha.value = fecha
