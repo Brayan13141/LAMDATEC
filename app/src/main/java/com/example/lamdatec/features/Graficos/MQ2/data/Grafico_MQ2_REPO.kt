@@ -27,22 +27,18 @@ class SensorMQ2RepositoryImp @Inject constructor(
     //DATOS DEL SENSOR EN TIEMPO REAL
     override fun consultarDatosSensores(actualizar: (Pair<List<Point>, Float>) -> Unit) {
         var airValues: List<Float> = listOf()
-
-        // Acceso a la referencia de la base de datos
-        // Listener para conexión exitosa
         db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/Valor").get().addOnSuccessListener {
             // Listener para obtener los valores en tiempo real
             db.reference.child("LAMDATEC/Sensores/SENSORES/MQ2/Valor")
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val valor = snapshot.getValue(Int::class.java) ?: 0
-                        airValues = airValues + valor.toFloat()
-
+                        val valor = snapshot.getValue(Float::class.java) ?: 0f
+                        airValues = airValues + valor
                         // Convertimos airValues a una lista de puntos y lo enviamos junto con valor
                         val puntos = airValues.mapIndexed { index, value ->
                             Point(index.toFloat(), value)
                         }
-                        actualizar(Pair(puntos, valor.toFloat()))
+                        actualizar(Pair(puntos, valor))
 
                         Log.e("Firebase", "Valor actualizado en Firebase: $valor")
                     }
@@ -99,7 +95,7 @@ class SensorMQ2RepositoryImp @Inject constructor(
                         }
                     }
                     //-------------------------------- DATOS DE LA BD DIA ACTUAL--------------------------------
-                    if (incluirFecha.first==true && incluirFecha.second == "Dia" && Fecha == "") {
+                    if (incluirFecha.first==true && incluirFecha.second == "Dia" && (Fecha == ""||Fecha ==null)) {
                         for (horaSnapshot in fechaSnapshot.children) {
                            //Log.e("REPOMQ2-FECHAS", "fechaSnapshot : ${fechaSnapshot}")
                             //SE FILTRAN LOS DATOS EN BASE A LA FECHA ACTUAL(SNAPSHOT) Y LA FORMATEADA(DIAACTUAL)
@@ -130,7 +126,7 @@ class SensorMQ2RepositoryImp @Inject constructor(
                                 {
                                     val hora = horaSnapshot.key ?: continue
                                     val valor = horaSnapshot.child("VSENSOR").getValue(Float::class.java) ?: 0f
-                                    Log.e("REPOMQ2", "HORA BD : $hora- VALOR: $valor ")
+                                    //Log.e("REPOMQ2", "HORA BD : $hora- VALOR: $valor ")
                                     puntos.add(Point(puntos.size.toFloat(), valor))
                                     valorActual = valor // Actualiza al último valor encontrado
                                 }

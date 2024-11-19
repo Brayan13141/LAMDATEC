@@ -24,8 +24,7 @@ fun GraficoMQ2_VISTA(
     val valorActual = viewModel.valorActual.collectAsState()
      val Fechas = viewModel.Fechas.collectAsState()
 
-    PantallaConGraficoGENERAL(navController, "MQ2", puntosGrafico.value,valorActual.value.toInt(),
-    fechas = Fechas.value)
+    PantallaConGraficoGENERAL(navController, "MQ2", puntosGrafico.value,valorActual.value, fechas = Fechas.value)
     {
         viewModel.Actualizarfiltros(it.first,it.second?.toString())
         viewModel.obtenerFechasDisponibles()
