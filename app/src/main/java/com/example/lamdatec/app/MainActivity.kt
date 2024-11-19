@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.lamdatec.app.theme.LAMDATECTheme
 import com.example.lamdatec.core.navigation.App
+import com.example.lamdatec.features.components.HayInternet
+import com.example.lamdatec.features.components.PermissionRequestComposable
+import com.example.lamdatec.features.components.WifiActivado
 import com.example.lamdatec.features.pPrincipal.data.Worker.ActualizarHora
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +26,19 @@ class MainActivity : ComponentActivity() {
                 darkTheme = false,
                 dynamicColor = false
             ) {
-               App()
+
+                var Ban = false
+                PermissionRequestComposable({ granted ->
+                    Ban = granted
+                }) {
+                    if (Ban) {
+                        WifiActivado(this)  // Habilitar el Wi-Fi si es necesario
+                        if(HayInternet(this)){
+                        App()
+                        }
+                    }
+                }
+
             }
         }
     }
