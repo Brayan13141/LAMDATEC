@@ -97,7 +97,8 @@ dependencies {
     implementation(libs.core)
     implementation(libs.androidx.foundation.layout.android)
 
-    // Navigation
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+        // Navigation
     implementation(libs.navigation.compose)
     // Mas iconos
     implementation(libs.androidx.material.icons.extended.android)
