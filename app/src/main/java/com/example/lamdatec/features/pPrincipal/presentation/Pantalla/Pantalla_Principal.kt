@@ -51,9 +51,7 @@ fun PantallaInicio(
     viewModel: viewM_Principal = viewModel(),
     navController: NavHostController
 ) {
-    PPantallas(
-        navController = navController
-    ) {
+    PPantallas(navController = navController,"Inicio") {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
