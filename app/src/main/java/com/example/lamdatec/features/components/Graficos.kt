@@ -66,11 +66,11 @@ fun PantallaConGraficoGENERAL(
     navController: NavHostController,
     titulo: String,
     puntosGrafico: List<Point>,
-    Valor: Int,
+    Valor: Float,
     fechas: List<String>,
     FiltroSeleccionado: (Pair<FiltrosFecha, String?>) -> Unit
 ) {
-    PPantallas(navController) {
+    PPantallas(navController,titulo) {
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Botones(fechas) { filtroSeleccionado ->
                 FiltroSeleccionado(filtroSeleccionado)
@@ -82,7 +82,7 @@ fun PantallaConGraficoGENERAL(
                         .fillMaxWidth()
                         .border(1.dp, Color.Black, shape = MaterialTheme.shapes.large)
                 ) {
-                    Grafico(puntosGrafico)
+                     Grafico(puntosGrafico)
                 }
 
             }
@@ -208,6 +208,9 @@ fun Botones(
                                 isSelected = BotonFechaI == fechaIndex
                                 if (isSelected) {
                                     FiltroSeleccionado(Pair(filtroI, Fecha))
+                                }else
+                                {
+                                    FiltroSeleccionado(Pair(filtroI, null))
                                 }
                             }
                             // Log.e("BOTON-FECHA", "SELECCIONADO: $isSelected - FECHA: $BotonFechaI")
@@ -287,17 +290,19 @@ fun Botones(
 fun Grafico(Puntos: List<Point>) {
     var puntosGrafico by remember { mutableStateOf(Puntos) }
 
-    puntosGrafico = Puntos.takeLast(10) // Mantener los últimos 10 puntos
+    if (puntosGrafico.size > 10) {
+        puntosGrafico = puntosGrafico.drop(1)
+    }
 
     val steps = 15
 
     if (puntosGrafico.isNotEmpty()) {
         // Valor máximo y mínimo del eje Y basado en los valores actuales de los puntos
         val yAxisMaxValue by remember {
-            derivedStateOf { puntosGrafico.maxOfOrNull { it.y.toInt() } ?: 0 }
+            derivedStateOf { puntosGrafico.maxOfOrNull { it.y } ?: 0 }
         }
         val yAxisMinValue by remember {
-            derivedStateOf { puntosGrafico.minOfOrNull { it.y.toInt() } ?: 0 }
+            derivedStateOf { puntosGrafico.minOfOrNull { it.y } ?: 0 }
         }
 
 
@@ -323,9 +328,10 @@ fun Grafico(Puntos: List<Point>) {
             .labelAndAxisLinePadding(20.dp)
             .labelData { i ->
                 // Dividir el rango exacto en `steps` partes y mostrar los valores correspondientes
-                val range = yAxisMaxValue - yAxisMinValue
-                val exactValue = yAxisMinValue + (i * range / steps)
-                exactValue.toString()
+                val range = yAxisMaxValue.toFloat() - yAxisMinValue.toFloat()
+                val exactValue = (yAxisMinValue.toFloat() + (i.toFloat() * range / steps))
+                val Red = String.format("%.2f", exactValue)
+                Red
             }.build()
 
         // Configuración del gráfico de líneas
