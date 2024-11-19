@@ -1,4 +1,4 @@
-package com.example.lamdatec.features.components
+package com.example.lamdatec.features.components.MenuLat
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DrawerItem(
+fun MenuItem(
     modifier: Modifier = Modifier,
     label: String = "Ejemplo",
     icon: ImageVector = Icons.Outlined.Home,

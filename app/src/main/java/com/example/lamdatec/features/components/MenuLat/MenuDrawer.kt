@@ -1,4 +1,4 @@
-package com.example.lamdatec.features.components
+package com.example.lamdatec.features.components.MenuLat
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import com.example.lamdatec.R
 import com.example.lamdatec.core.navigation.Destinations
 
 @Composable
-fun DrawerContent(
+fun MenuDrawer(
     navController: NavHostController
 ) {
     val currentEntry = navController.currentBackStackEntryAsState()
@@ -82,7 +82,7 @@ fun DrawerContent(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        DrawerItem(
+        MenuItem(
             label = stringResource(id = R.string.lblHome),
             icon = Icons.Outlined.Home,
             iconDescription = "",
@@ -97,7 +97,7 @@ fun DrawerContent(
             }
         )
 
-        DrawerItem(
+        MenuItem(
             label = stringResource(id = R.string.lblSensorMQ2),
             icon = Icons.Outlined.Home,
             iconDescription = "",
@@ -109,7 +109,7 @@ fun DrawerContent(
             }
         )
 
-        DrawerItem(
+        MenuItem(
             label = stringResource(id = R.string.lblSensorMQ7),
             icon = Icons.Outlined.Home,
             iconDescription = "",
@@ -127,7 +127,7 @@ fun DrawerContent(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        DrawerItem(
+        MenuItem(
             label = stringResource(id = R.string.lblLogOut),
             icon = Icons.AutoMirrored.Outlined.Logout,
             iconDescription = "",
