@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,13 +38,15 @@ import androidx.navigation.NavHostController
 import com.example.lamdatec.R
 import com.example.lamdatec.app.theme.green
 import com.example.lamdatec.app.theme.onGreen
+import com.example.lamdatec.features.components.MenuLat.MenuDrawer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PPantallas(
     navController: NavHostController,
-    content: @Composable () -> Unit,
+    Titulo: String,
+    content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -59,17 +62,16 @@ fun PPantallas(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(
+            MenuDrawer(
                 navController = navController
             )
         }
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(modifier = Modifier,
-                    title = {
-                    botonesPrincipales()
-                    },
+                TopAppBar(
+                    modifier = Modifier,
+                    title = { botonesPrincipales(Titulo) },
                     navigationIcon = {
                         IconButton(
                             onClick = {
@@ -103,63 +105,64 @@ fun PPantallas(
 }
 
 @Composable
-fun botonesPrincipales()
-{
-    Text(
-        text = "Titulo",
-        fontSize = 24.sp,
-        color = Color.White
-    )
+fun botonesPrincipales(
+    Titulo: String
+) {
     Row(
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()
-            .padding(top = 30.dp, bottom = 10.dp)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp, 0.dp, 2.dp, 0.dp)  // Adjust padding for TopAppBar
     ) {
-        // Icono de Bluetooth
-        IconButton(
-            onClick = { /* Acción para Bluetooth */ },
-            modifier = Modifier
-                .size(40.dp)
-                .background(Color.White, RoundedCornerShape(8.dp))
-                .padding(4.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icons8_hidr_geno_50), // Reemplaza con tu recurso
-                contentDescription = "Bluetooth",
-            )
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        // Icono de Wi-Fi
-        IconButton(
-            onClick = { /* Acción para Wi-Fi */ },
-            modifier = Modifier
-                .size(40.dp)
-                .background(Color.White, RoundedCornerShape(8.dp))
-                .padding(4.dp)
-        ) {
-            Icon(modifier = Modifier.size(80.dp),
-                painter = painterResource(id = R.drawable.ico_wifi_off), // Reemplaza con tu recurso
-                contentDescription = "Wi-Fi",
-            )
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        // Estado de conexión
-        Box(
-            modifier = Modifier
-                .background(Color.White, RoundedCornerShape(8.dp))
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-        ) {
+        Row(Modifier.width(110.dp)) {
             Text(
-                text = "Conectado",
-                fontSize = 16.sp,
-                color = Color.Black
+                text = Titulo,
+                fontSize = 24.sp,
+                color = Color.White
             )
         }
-    }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+        ) {
+            // Icono de Wi-Fi
+            IconButton(
+                onClick = {
+
+                },
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.LightGray, RoundedCornerShape(8.dp))
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Wifi,
+                    contentDescription = "Wifi",
+                    tint = Color.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Estado de conexión
+            Box(
+                modifier = Modifier
+                    .background(Color.LightGray, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 12.dp, vertical = 5.dp)
+            ) {
+                Text(
+                    text = "Desconectado",
+                    fontSize = 16.sp,
+                    modifier = Modifier,
+                    color = Color.Black
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+    }
 }
