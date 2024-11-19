@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.lamdatec.app.theme.LAMDATECTheme
 import com.example.lamdatec.core.navigation.App
 import com.example.lamdatec.features.components.HayInternet
-import com.example.lamdatec.features.components.PermissionRequestComposable
+import com.example.lamdatec.features.components.PermisosComposable
 import com.example.lamdatec.features.components.WifiActivado
 import com.example.lamdatec.features.pPrincipal.data.Worker.ActualizarHora
 import com.google.firebase.FirebaseApp
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 var Ban = false
-                PermissionRequestComposable({ granted ->
+                PermisosComposable({ granted ->
                     Ban = granted
                 }) {
                     if (Ban) {
